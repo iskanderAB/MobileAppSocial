@@ -1,1 +1,52 @@
-import React from 'react' ;
+import React from 'react';
+import {StyleSheet,ScrollView,Text,View} from "react-native";
+import Post from "../../components/Card/Post";
+import { MaterialIcons } from '@expo/vector-icons';
+import {Avatar} from "react-native-paper";
+
+
+
+
+
+const Home = () => {
+    return (
+        <View  style={styles.container} >
+            <View style={styles.header}>
+                <Text style={styles.text}> Accueil </Text>
+                <MaterialIcons name="notifications-none" size={30} color="black" />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <Post/>
+                <Post/>
+                <Post/>
+                <Post/>
+                <Post/>
+            </ScrollView>
+        </View>
+
+        ) ;
+
+}
+
+const styles = StyleSheet.create({
+    container : {
+        backgroundColor : 'white',
+        flex : 1,
+        paddingHorizontal : 20
+    },
+    header : {
+        //backgroundColor : 'red',
+        height : 50,
+        width : '100%',
+        marginTop: 50,
+        alignSelf : 'center',
+        alignItems : 'center',
+        flexDirection : 'row',
+        justifyContent : 'space-between',
+    },
+    text : {
+        fontWeight : 'bold',
+        fontSize : 20
+    }
+});
+export default Home;
