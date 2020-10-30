@@ -7,7 +7,7 @@ const LeftContent = () => <Avatar.Image  size={50} source={{uri:'https://pyxis.n
 const Post = () => {
     return (
         <Card style={styles.post}>
-            <Card.Title title="Iskander AB" style={{paddingLeft :0}} subtitle="Etudiant" left={LeftContent}/>
+            <Card.Title title="Iskander AB" style={{paddingLeft :0}} subtitle="Il ya 2 heurs " left={LeftContent}/>
             <Card.Content style={{paddingLeft :0}}>
                 <Paragraph>Download and use TextNow on any device to get a free phone number, and call and text anywhere in North America for free</Paragraph>
             </Card.Content>
