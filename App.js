@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Home from "./src/screens/Home/Home";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 function HomeScreen() {
     return (
@@ -34,13 +35,13 @@ export default function App() {
                         let iconName;
 
                         if (route.name === 'Home') {
-                            iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
+                            iconName = focused ? 'home' : 'ios-information-circle-outline';
                         } else if (route.name === 'Chat') {
                             iconName = focused ? 'chatbubble-outline' : 'chatbubble-sharp';
                         }
 
                         // You can return any component that you like here!
-                        return <Ionicons name={iconName} size={size} color={color} />;
+                        return <AntDesign name="home" size={24} color="black" />;
                     },
                 })}
                 tabBarOptions={{

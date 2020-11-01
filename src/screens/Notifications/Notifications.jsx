@@ -5,7 +5,7 @@ const Notifications = () => {
     return{
 
     }
-}
+};
 
 const styles = StyleSheet.create({
 
