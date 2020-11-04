@@ -3,14 +3,13 @@ import * as React from 'react';
 import {Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Octicons ,MaterialIcons ,Entypo   } from '@expo/vector-icons';
+import { Octicons ,MaterialIcons ,Entypo  } from '@expo/vector-icons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Notifications from "./src/screens/Notifications/Notifications";
 import Home from "./src/screens/Home/Home";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import NativeStackNavigator from "react-native-screens/src/native-stack/navigators/createNativeStackNavigator";
 import {createStackNavigator} from "@react-navigation/stack";
 import Profile from "./src/screens/Profile/Profile";
+
 
 function Chat() {
     return (
@@ -82,7 +81,7 @@ export default function App() {
                     },
                 })}
                 tabBarOptions={{
-                    activeTintColor: 'tomato',
+                    activeTintColor: '#00BFFF',
                     inactiveTintColor: 'gray',
                     showLabel :false
                 }}>

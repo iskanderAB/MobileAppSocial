@@ -1,25 +1,43 @@
-import React from 'react';
-import {StyleSheet,ScrollView,Text,View} from "react-native";
+import React, {useState} from 'react';
+import  {StyleSheet, ScrollView, Text, View, Pressable,RefreshControl,} from "react-native";
 import Post from "../../components/Card/Post";
-import { MaterialIcons } from '@expo/vector-icons';
+import {MaterialIcons} from '@expo/vector-icons';
 import {Avatar} from "react-native-paper";
-
+const wait = (timeout) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+    });
+}
 const Home = ({navigation}) => {
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
     console.log(navigation);
+    const [notificationBackColor , setNotificationBackColor] = useState('red');
     return (
-        <View  style={styles.container} >
+        <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.text}> Accueil </Text>
-                <MaterialIcons
-                    name="notifications-none"
-                    size={30} color="black"
-                    onPress={()=> navigation.navigate('Notifications')}
-                />
+                <Pressable
+                    onPress={() => {
+                        setTimeout(()=> navigation.navigate('Notifications'));
+                    }}>
+                    {({ pressed }) => (
+                        <MaterialIcons
+                            style={{backgroundColor:  pressed ? '#F5E6E6' : '#FFFFFF',borderRadius:50}}
+                            name="notifications-none"
+                            size={30} color="black"
+                        />
+                    )}
+                </Pressable>
             </View>
-            <View style={{flexDirection: 'row',alignItems: 'center'}} >
-                <Text style={{color:"#d6d6d6",fontWeight: 'bold'}}> Derniers statuts </Text><View style={styles.line}></View>
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }            >
                 <Post/>
                 <Post/>
                 <Post/>
@@ -27,38 +45,36 @@ const Home = ({navigation}) => {
                 <Post/>
             </ScrollView>
         </View>
-
-        ) ;
-
+    );
 };
 
 const styles = StyleSheet.create({
-    container : {
-        backgroundColor : 'white',
-        flex : 1,
-        paddingHorizontal : 0
+    container: {
+        backgroundColor: 'white',
+        flex: 1,
+        paddingHorizontal: 0
     },
-    header : {
+    header: {
         //backgroundColor : 'red',
-        height : 50,
-        width : '100%',
+        height: 50,
+        width: '100%',
         marginTop: 50,
-        paddingHorizontal : 10,
-        alignSelf : 'center',
-        alignItems : 'center',
-        flexDirection : 'row',
-        justifyContent : 'space-between',
+        paddingHorizontal: 10,
+        alignSelf: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    text : {
-        fontWeight : 'bold',
-        fontSize : 20
+    text: {
+        fontWeight: 'bold',
+        fontSize: 20
     },
     line: {
-        top : 3 ,
-        borderBottomWidth : 1,
+        top: 3,
+        borderBottomWidth: 1,
         borderColor: '#ddd',
         flex: 1,
-        marginLeft : 5
-    }
+        marginLeft: 5
+    },
 });
 export default Home;
