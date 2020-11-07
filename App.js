@@ -9,15 +9,10 @@ import Notifications from "./src/screens/Notifications/Notifications";
 import Home from "./src/screens/Home/Home";
 import {createStackNavigator} from "@react-navigation/stack";
 import Profile from "./src/screens/Profile/Profile";
+import Chat from "./src/screens/Chat/Chat";
 
 
-function Chat() {
-    return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>Chat!</Text>
-        </View>
-    );
-}
+
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = (props) =>{
