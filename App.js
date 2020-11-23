@@ -10,6 +10,7 @@ import Home from "./src/screens/Home/Home";
 import {createStackNavigator} from "@react-navigation/stack";
 import Profile from "./src/screens/Profile/Profile";
 import Chat from "./src/screens/Chat/Chat";
+import Register from "./src/screens/Register/Refgister";
 
 
 
@@ -51,41 +52,53 @@ const HomeStackScreen = (props) =>{
 };
 
 const Tab = createBottomTabNavigator();
+const TabNavigation = (props) => {
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    if (route.name === 'Home') {
+                        iconName = 'md-home'
+                    } else if (route.name === 'Chat') {
+                        iconName = 'ios-chatbubbles';
+                    }
+                    else if (route.name ==='Add'){
+                        return <Octicons name="diff-added" size={37} color={color} />
+                    }else if(route.name ==='Profile'){
+                        return <MaterialIcons name="person-outline" size={37} color={color} />
+                    }else if(route.name ==='Settings'){
+                        return <Entypo name="dots-three-vertical" size={30} color={color} />
+                    }
+
+                    // You can return any component that you like here!
+                    return <Ionicons name={iconName} size={37} color={color} />;
+                },
+            })}
+            tabBarOptions={{
+                activeTintColor: '#00BFFF',
+                inactiveTintColor: 'gray',
+                showLabel :false
+            }}>
+            <Tab.Screen name="Home"  component={HomeStackScreen}/>
+            <Tab.Screen name="Chat" component={Chat}/>
+            <Tab.Screen name='Add' component={Chat} />
+            <Tab.Screen name='Profile' component={Profile}/>
+            <Tab.Screen name='Settings' component={Chat}/>
+        </Tab.Navigator>
+    );
+}
+const MainStack = createStackNavigator();
 export default function App() {
     return (
         <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === 'Home') {
-                            iconName = 'md-home'
-                        } else if (route.name === 'Chat') {
-                            iconName = 'ios-chatbubbles';
-                        }
-                        else if (route.name ==='Add'){
-                            return <Octicons name="diff-added" size={37} color={color} />
-                        }else if(route.name ==='Profile'){
-                            return <MaterialIcons name="person-outline" size={37} color={color} />
-                        }else if(route.name ==='Settings'){
-                            return <Entypo name="dots-three-vertical" size={30} color={color} />
-                        }
-
-                        // You can return any component that you like here!
-                        return <Ionicons name={iconName} size={37} color={color} />;
-                    },
-                })}
-                tabBarOptions={{
-                    activeTintColor: '#00BFFF',
-                    inactiveTintColor: 'gray',
-                    showLabel :false
-                }}>
-                <Tab.Screen name="Home"  component={HomeStackScreen}/>
-                <Tab.Screen name="Chat" component={Chat}/>
-                <Tab.Screen name='Add' component={Chat} />
-                <Tab.Screen name='Profile' component={Profile}/>
-                <Tab.Screen name='Settings' component={Chat}/>
-            </Tab.Navigator>
+            <MainStack.Navigator>
+                <MainStack.Screen name={'Inscription'}
+                                  component={Register}/>
+                {/*<MainStack.Screen name={'App'}*/}
+                {/*                  component={TabNavigation}/>*/}
+            </MainStack.Navigator>
+            {TabNavigation}
         </NavigationContainer>
     );
 }

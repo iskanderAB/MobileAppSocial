@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import  {StyleSheet, ScrollView, Text, View, Pressable,RefreshControl,} from "react-native";
 import Post from "../../components/Card/Post";
 import {MaterialIcons} from '@expo/vector-icons';
@@ -8,15 +8,18 @@ const wait = (timeout) => {
         setTimeout(resolve, timeout);
     });
 }
-const Home = ({navigation}) => {
+const Home = ({navigation}) =>  {
     const [refreshing, setRefreshing] = React.useState(false);
-
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));
     }, []);
     console.log(navigation);
     const [notificationBackColor , setNotificationBackColor] = useState('red');
+
+    useEffect(()=>{
+
+    });
     return (
         <View style={styles.container}>
             <View style={styles.header}>
