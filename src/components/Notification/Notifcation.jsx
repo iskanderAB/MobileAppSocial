@@ -7,7 +7,7 @@ const LeftContent = () => <Avatar.Image  size={50} source={{uri:'https://pyxis.n
 const Notification = () => {
     return (
         <Card style={styles.post}>
-            <Card.Title title="Iskander AB" style={{paddingLeft :3}} subtitle={<Text style={{color:'black'}}> hello ennes el kol  </Text>} left={LeftContent} right={()=><Text style={styles.new}>new</Text>}/>
+            <Card.Title title="donayla pfe" style={{paddingLeft :3}} subtitle={<Text style={{color:'black'}}> hello ennes el kol  </Text>} left={LeftContent} right={()=><Text style={styles.new}>new</Text>}/>
 
         </Card>
     );
