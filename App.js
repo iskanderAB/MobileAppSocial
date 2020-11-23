@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import {Text, View} from 'react-native';
+import {TabBarIOSItem, Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Octicons ,MaterialIcons ,Entypo  } from '@expo/vector-icons';
@@ -95,10 +95,11 @@ export default function App() {
             <MainStack.Navigator>
                 <MainStack.Screen name={'Inscription'}
                                   component={Register}/>
-                {/*<MainStack.Screen name={'App'}*/}
-                {/*                  component={TabNavigation}/>*/}
+                <MainStack.Screen name={'App'}
+                                options={{
+                                   headerShown: false}}
+                            component={TabNavigation}/>
             </MainStack.Navigator>
-            {TabNavigation}
         </NavigationContainer>
     );
 }

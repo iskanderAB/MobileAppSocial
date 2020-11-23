@@ -4,25 +4,32 @@ import {Button} from 'react-native-paper';
 import axios from "axios";
 
 
-const Register = () => {
+const Register = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");
     const [email,setEmail] = useState("");
     const [classe,setClasse] = useState("");
     const [tel,setTel] = useState();
     const [password,setPassword] = useState("");
+    const [loading , setLoading] = useState(false)
     useEffect(() => {
-        console.log(email);
+        console.log('iskander',navigation);
+        // console.log(email);
+        // console.log(prenom);
+        // console.log(nom);
+        // console.log(classe);
+        // console.log(tel);
     })
 
-    const requestRegistre = () => {
-        console.log("EMAILLLLLLLLL" , email);
-        axios.post("http://192.168.1.36:8001/api/addUser",{
+      function requestRegistre() {
+        // alert(`Donayla test  ${email}`);
+        setLoading(true);
+         axios.post("http://192.168.0.53:8001/api/addUser",{
             "email": email,
             "password" :password,
             "nom" : nom,
             "prenom" : prenom,
-            "telephone": tel,
+            "telephone": parseInt(tel),
             "classe" : classe
         },{
             headers:{
@@ -31,35 +38,46 @@ const Register = () => {
             }
         }).then(function (response) {
             // handle success
-            alert(JSON.stringify(response.data));
+            setTimeout(()=> navigation.navigate('App'),500)
+            setTimeout(()=>{
+                 alert(`user added ! ${email}`);
+                 setLoading(false)},200);
+        }).catch(error => {
+            setLoading(false);
+            console.log('====================================');
+            console.log( error.response);
+            console.log('====================================');
+            alert(`${error.response.data.message.detail}`);
         })
     }
 
-    const [loading , setLoading] = useState(false)
     return (<ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Text style={styles.text}>Nom</Text>
         <TextInput placeholder={'Nom ... '} style={styles.input} selectionColor={'red'}
-        onChange={(text)=> setNom(text)}
+        onChangeText={(text)=> setNom(text)}
         />
         <Text style={styles.text}> Prenom</Text>
         <TextInput placeholder={'Prénom ... '} style={styles.input}
-        onChange={(text)=> setPrenom(text)}
+        onChangeText={(text)=> setPrenom(text)}
         />
         <Text style={styles.text}> Email </Text>
-        <TextInput placeholder={'Email ... '} keyboardType={'email-address'} style={styles.input}
-        onChange={(text)=> setEmail(text)}
+        <TextInput 
+            placeholder={'Email ... '} 
+            keyboardType={'email-address'} 
+            style={styles.input}
+            onChangeText={ text=> setEmail(text)}
         />
         <Text style={styles.text}> Classe </Text>
         <TextInput placeholder={'Classe ... '} style={styles.input}
-        onChange={(text)=> setClasse(text)}
+        onChangeText={(text)=> setClasse(text)}
         />
         <Text style={styles.text}> Telephone </Text>
         <TextInput placeholder={'Telephone ... '} keyboardType={'phone-pad'} style={styles.input}
-        onChange={(text)=> setTel(text)}
+        onChangeText={(text)=> setTel(text)}
         />
         <Text style={styles.text}> Mot de passe </Text>
         <TextInput placeholder={'Mot de passe ... '} secureTextEntry={true} style={styles.input}
-        onChange={(text)=> setPassword(text)}
+        onChangeText={(text)=> setPassword(text)}
         />
         <Text style={styles.text}> Confirmer Mot de passe </Text>
         <TextInput placeholder={'Confirmer Mot de passe ... '} secureTextEntry={true} style={styles.input}/>
