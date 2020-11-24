@@ -1,10 +1,11 @@
-import React from 'react' ; 
+import React from 'react' ;
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Chat from '../Chat/Chat';
 import Profile from '../Profile/Profile';
 import { Octicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeStackScreen from '../HomeStackScreen/HomeStackScreen';
+import Post from "../Post/Post";
 
 const Tab = createBottomTabNavigator();
 const AppScreen = (props) => {
@@ -37,10 +38,10 @@ const AppScreen = (props) => {
             }}>
             <Tab.Screen name="Home" component={HomeStackScreen} />
             <Tab.Screen name="Chat" component={Chat} />
-            <Tab.Screen name='Add' component={Chat} />
+            <Tab.Screen name='Add' component={Post} />
             <Tab.Screen name='Profile' component={Profile} />
             <Tab.Screen name='Settings' component={Chat} />
         </Tab.Navigator>
     );
 }
-export default AppScreen ; 
+export default AppScreen ;
