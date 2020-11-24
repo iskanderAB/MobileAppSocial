@@ -1,52 +1,53 @@
 import 'react-native-gesture-handler';
-import * as React from 'react';
-import {TabBarIOSItem, Text, View} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React , {createContext} from 'react';
+import { TabBarIOSItem, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Octicons ,MaterialIcons ,Entypo  } from '@expo/vector-icons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { Octicons, MaterialIcons, Entypo } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Notifications from "./src/screens/Notifications/Notifications";
 import Home from "./src/screens/Home/Home";
-import {createStackNavigator} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Profile from "./src/screens/Profile/Profile";
 import Chat from "./src/screens/Chat/Chat";
 import Register from "./src/screens/Register/Refgister";
+import LoginScreen from './src/screens/Login/Login';
 
 
 
 
 const HomeStack = createStackNavigator();
-const HomeStackScreen = (props) =>{
-    return(
+const HomeStackScreen = (props) => {
+    return (
         <HomeStack.Navigator >
             <HomeStack.Screen name={'HomePage'}
-                              options={{
-                                    title: "Home",
-                                    headerShown: false,
-                              }}
-                              component={Home}/>
+                options={{
+                    title: "Home",
+                    headerShown: false,
+                }}
+                component={Home} />
             <HomeStack.Screen name={'Notifications'}
-                                 options={{
-                                   headerShown: false
-                                  /*headerRight : () =>(<Ionicons
-                                      name={'md-close-circle-outline'}
-                                      /!*onPress={() => props.navigation.navigate('HomePage',{go_back_key:props.route.key})}*!/
-                                      size={30}
-                                      color={'black'}/>),
-                                      headerRightContainerStyle:{
-                                      paddingRight : 15
-                                  },
-                                   headerLeft : null,
+                options={{
+                    headerShown: false
+                    /*headerRight : () =>(<Ionicons
+                        name={'md-close-circle-outline'}
+                        /!*onPress={() => props.navigation.navigate('HomePage',{go_back_key:props.route.key})}*!/
+                        size={30}
+                        color={'black'}/>),
+                        headerRightContainerStyle:{
+                        paddingRight : 15
+                    },
+                     headerLeft : null,
 
-                                   headerLeftContainerStyle:{
-                                       padding:0
-                                   },
-                                   headerTitleStyle:{
-                                       alignSelf : 'flex-start',
-                                       marginLeft: -13
-                                   }*/
-                              }}
-                              component={Notifications}/>
+                     headerLeftContainerStyle:{
+                         padding:0
+                     },
+                     headerTitleStyle:{
+                         alignSelf : 'flex-start',
+                         marginLeft: -13
+                     }*/
+                }}
+                component={Notifications} />
         </HomeStack.Navigator>
     );
 };
@@ -63,11 +64,11 @@ const TabNavigation = (props) => {
                     } else if (route.name === 'Chat') {
                         iconName = 'ios-chatbubbles';
                     }
-                    else if (route.name ==='Add'){
+                    else if (route.name === 'Add') {
                         return <Octicons name="diff-added" size={37} color={color} />
-                    }else if(route.name ==='Profile'){
+                    } else if (route.name === 'Profile') {
                         return <MaterialIcons name="person-outline" size={37} color={color} />
-                    }else if(route.name ==='Settings'){
+                    } else if (route.name === 'Settings') {
                         return <Entypo name="dots-three-vertical" size={30} color={color} />
                     }
 
@@ -78,27 +79,38 @@ const TabNavigation = (props) => {
             tabBarOptions={{
                 activeTintColor: '#00BFFF',
                 inactiveTintColor: 'gray',
-                showLabel :false
+                showLabel: false
             }}>
-            <Tab.Screen name="Home"  component={HomeStackScreen}/>
-            <Tab.Screen name="Chat" component={Chat}/>
+            <Tab.Screen name="Home" component={HomeStackScreen} />
+            <Tab.Screen name="Chat" component={Chat} />
             <Tab.Screen name='Add' component={Chat} />
-            <Tab.Screen name='Profile' component={Profile}/>
-            <Tab.Screen name='Settings' component={Chat}/>
+            <Tab.Screen name='Profile' component={Profile} />
+            <Tab.Screen name='Settings' component={Chat} />
         </Tab.Navigator>
     );
 }
+export const AuthContext = createContext()
 const MainStack = createStackNavigator();
 export default function App() {
     return (
         <NavigationContainer>
             <MainStack.Navigator>
+                <MainStack.Screen name={'Se connecter'}
+                    options={
+                        {
+                            headerTitleStyle: {
+                                alignSelf: 'center',
+                            }
+                        }
+                    }
+                    component={LoginScreen} />
                 <MainStack.Screen name={'Inscription'}
-                                  component={Register}/>
+                    component={Register} />
                 <MainStack.Screen name={'App'}
-                                options={{
-                                   headerShown: false}}
-                            component={TabNavigation}/>
+                    options={{
+                        headerShown: false
+                    }}
+                    component={TabNavigation} />
             </MainStack.Navigator>
         </NavigationContainer>
     );

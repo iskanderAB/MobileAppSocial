@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {StyleSheet, Text, TextInput, View, LogBox, Button, FlatList} from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore'
-import LoginScreen from "../LoginScreen";
 
 
 const firebaseConfig = {
@@ -80,11 +79,11 @@ const Chat = () =>  {
     }
 
 
-    if(!user) {
-        return (
-            <LoginScreen value={name} onChangeText={setName} onPress={handlePress}/>
-        )
-    }
+    // if(!user) {
+    //     return (
+    //         <LoginScreen value={name} onChangeText={setName} onPress={handlePress}/>
+    //     )
+    // }
 
     return (//<GiftedChat isTyping={true} showUserAvatar={false} messages={props.messages} user={props.user} onSend={props.onSend} />
         <GiftedChat messages={messages} user={user} onSend={handleSend} />

@@ -24,7 +24,7 @@ const Register = ({navigation}) => {
       function requestRegistre() {
         // alert(`Donayla test  ${email}`);
         setLoading(true);
-         axios.post("http://192.168.0.53:8001/api/addUser",{
+         axios.post("http://192.168.1.36:8001/api/addUser",{
             "email": email,
             "password" :password,
             "nom" : nom,
