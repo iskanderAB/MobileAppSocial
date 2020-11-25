@@ -20,7 +20,7 @@ const ImageUpload = () => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       base64:true
@@ -32,7 +32,6 @@ const ImageUpload = () => {
       console.log('[imageUpload]' , typeof result.base64)
     }
   };
-
 
   return (
     <TouchableHighlight onPress={() => pickImage()} underlayColor="white">
