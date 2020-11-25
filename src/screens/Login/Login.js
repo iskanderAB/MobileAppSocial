@@ -2,29 +2,56 @@ import React, { useState, useContext } from "react";
 import { TextInput, View, StyleSheet, Text } from "react-native";
 import { Button } from 'react-native-paper';
 import { log } from "react-native-reanimated";
-import {AuthContext} from '../../components/Context/AuthContext';
+import AuthContext from '../../components/Context/AuthContext';
 
-const LoginScreen = (props) => {
+const LoginScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
-    const {signIn} = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
+    const [username, setUsername] = useState(null);
+    const [password, setPassword] = useState(null);
     return (
-            
-            <View style={styles.container}>
-                <Text style={styles.text}> Email </Text>
-                <TextInput style={styles.input} value={props.name} placeholder="Entrer votre Email ..." onChangeText={props.onChangeText} />
-                <Text style={styles.text}> Mot de passe  </Text>
-                <TextInput style={styles.input} value={props.name} placeholder="Tapez votre mot de passe ... " onChangeText={props.onChangeText} />
-                <Button
-                    title="Left button"
-                    onPress={()=> signIn()}
-                    mode="contained"
-                    color='#50aeff'
-                    loading={loading}
-                    style={styles.button}
-                    labelStyle={styles.label}
-                    contentStyle={{ height: 60 }}
-                > S'inscrire </Button>
-            </View>
+        <View style={styles.container}>
+            <Text style={styles.text}> Email </Text>
+            <TextInput style={styles.input}
+                value={username}
+                placeholder="Entrer votre Email ..."
+                onChangeText={text => setUsername(text)} />
+            <Text style={styles.text}> Mot de passe  </Text>
+            <TextInput style={styles.input}
+                value={password}
+                secureTextEntry
+                placeholder="Tapez votre mot de passe ... "
+                onChangeText={text => setPassword(text)} />
+            <Button
+                title="Left button"
+                onPress={() => {
+                    setLoading(true);
+                    if (password == null || username == null || password == "" || username == "") {
+                        setLoading(false);
+                        alert("Il y a un champ vide !!! ");
+                    } else {
+                        signIn(username, password, setLoading);
+                    }
+
+                }}
+                mode="contained"
+                color='#50aeff'
+                loading={loading}
+                style={styles.button}
+                labelStyle={styles.label}
+                contentStyle={{ height: 60 }}
+            > S'inscrire </Button>
+
+            <Text style={{ color: 'gray' }} > Vous n'avez pas un compte ? <Text style={{ color: '#6495ED' }}
+                                                                                onPress={()=> {
+                                                                                    console.log("oressed ! ");
+                                                                                    navigation.navigate('Inscription')
+                                                                                }}
+                                                                        >
+                S'inscrire
+            </Text>
+            </Text>
+        </View>
     )
 }
 

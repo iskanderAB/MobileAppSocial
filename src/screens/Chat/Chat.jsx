@@ -86,18 +86,34 @@ const Chat = () =>  {
     // }
 
     return (//<GiftedChat isTyping={true} showUserAvatar={false} messages={props.messages} user={props.user} onSend={props.onSend} />
-        <GiftedChat messages={messages} user={user} onSend={handleSend} />
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={{fontWeight:'bold',fontSize:30,marginBottom :10}}> Chattes  </Text>
+            </View>
+         <GiftedChat messages={messages} user={user} onSend={handleSend} />
+        </View>
         //  <UsersScreen messages={messages}/>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'white',
         flex: 1,
-        backgroundColor: '#fff',
+        paddingHorizontal: 0
+    },
+    header: {
+        //backgroundColor : 'red',
+        height: 50,
+        width: '100%',
+        marginTop: 50,
+        paddingHorizontal: 10,
+        alignSelf: 'center',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding : 30,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderBottomWidth : 1,
+        borderBottomColor : '#cfcfe1'
     },
     input : {
         height : 50,

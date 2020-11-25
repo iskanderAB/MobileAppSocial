@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, TextInput, ScrollView, RefreshControl} from "react-native";
+import {View, Text, StyleSheet, TextInput, ScrollView, Alert} from "react-native";
 import {Button} from 'react-native-paper';
 import axios from "axios";
 
-
+let ip = '192.168.43.207';
 const Register = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");
@@ -24,7 +24,7 @@ const Register = ({navigation}) => {
       function requestRegistre() {
         // alert(`Donayla test  ${email}`);
         setLoading(true);
-         axios.post("http://192.168.1.36:8001/api/addUser",{
+         axios.post(`http://${ip}:8001/api/addUser`,{
             "email": email,
             "password" :password,
             "nom" : nom,
@@ -33,14 +33,13 @@ const Register = ({navigation}) => {
             "classe" : classe
         },{
             headers:{
-            //    Authorization : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MDYxNDU0OTEsImV4cCI6MTYwNjE0OTA5MSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidXNlcjBAZ21haWwuY29tIn0.T6IJcnlZvf7_UeqaoUmdrat--jxsGB9B-QM63TIe_WjJOcUvRnm75nVjALJv18u0RJua7yy1no2SShbY0yDCivbnrR4Rmd1yqJ8loxxzb9FhOc0yaIaPvpISExDgGZ4udzafWAU9Hi48meTzC1w_TxRPyWGQOGM--v0sy1J-4CMtAUted48Qmd2V9cs_2wVODCr9_6l3yvxha_DAlXZMhNtK7T3MpMWbcRWd0SrLiCTwq6sWJo6KiNC-o_-NOqz4LmQIz-ESPZWvSeHq5spmIojeFXG9ZiE7W5b8NgnQfeRJiy7vXK2HBXSRT-5nnVVqCjXr_enklR4jMqvJ2rCfpsesbJJ_KaoYAO5tdSdEzDnreqNcyLW24TUUEFGGiTiu4zG8y3JK8BT1wHQadqBtnr_WKHk4VCxTcWtRwou6vXJwRUogThoW9l1b1CjxMMa3mLA_hf4MiRY5z23mMpB16Vx16n3Tpl0RCxJe-qkFglML9YNUjyxDLvU89-8570nrpWFPQcah84IrS2uRgjphjMIgpjd4IQii9aVU1-qy-izyNNi8VaVmDaRW5lJK5Zrajodvlsc9w7TkrjYg0upfs9k_luJLvwoOh8jgYZLvHE3H3KmIc5P-NWcxHNocqpTzKdErr41jZXADYo2Jz8NxEOjDv14YctIynkDfotRrqPc",
                 "Content-Type" : "application/json"
             }
         }).then(function (response) {
             // handle success
-            setTimeout(()=> navigation.navigate('App'),500)
+            setTimeout(()=> navigation.navigate('Se connecter'),500)
             setTimeout(()=>{
-                 alert(`user added ! ${email}`);
+                 Alert.alert("utilisateur ajouté avec succès ♥",`${email}`);
                  setLoading(false)},200);
         }).catch(error => {
             setLoading(false);
@@ -83,7 +82,7 @@ const Register = ({navigation}) => {
         <TextInput placeholder={'Confirmer Mot de passe ... '} secureTextEntry={true} style={styles.input}/>
         <Button
             title="Left button"
-            onPress={() => 0}
+            onPress={() => requestRegistre()}
             mode="contained"
             color='#50aeff'
             loading={loading}
@@ -94,7 +93,7 @@ const Register = ({navigation}) => {
         > S'inscrire </Button>
         <View style={{flex:1, alignItems: 'center',marginBottom: 20}}>
         <Text style={styles.textBottom}> Vous avez un compte ? </Text>
-        <Text style={{color:'#00A8FF'}}> Se connecter </Text>
+        <Text style={{color:'   '}} onPress={()=>navigation.navigate('Se connecter')}> Se connecter </Text>
         </View>
         </ScrollView>);
 }
