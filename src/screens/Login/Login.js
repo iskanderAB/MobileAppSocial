@@ -40,8 +40,7 @@ const LoginScreen = ({navigation}) => {
                 style={styles.button}
                 labelStyle={styles.label}
                 contentStyle={{ height: 60 }}
-            > S'inscrire </Button>
-
+            > Se connecter </Button>
             <Text style={{ color: 'gray' }} > Vous n'avez pas un compte ? <Text style={{ color: '#6495ED' }}
                                                                                 onPress={()=> {
                                                                                     console.log("oressed ! ");

@@ -11,7 +11,7 @@ import AppScreen from './src/screens/AppScreen/AppScreen';
 import Updater from './updater/Updater';
 import Axios from 'axios';
 
-let ip = '192.168.43.207';
+let ip = '192.168.1.36';
 
 const MainStack = createStackNavigator();
 
@@ -20,7 +20,6 @@ const initialLoginStat = {
     userName: null,
     userToken: null
 };
-
 
 const getData = async (key) => {
     try {

@@ -2,8 +2,10 @@ import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet, TextInput, ScrollView, Alert} from "react-native";
 import {Button} from 'react-native-paper';
 import axios from "axios";
+import ImageUpload from "../../components/ImagePicker/ImageUpload";
 
-let ip = '192.168.43.207';
+
+let ip = '192.168.1.36';
 const Register = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");
@@ -80,6 +82,7 @@ const Register = ({navigation}) => {
         />
         <Text style={styles.text}> Confirmer Mot de passe </Text>
         <TextInput placeholder={'Confirmer Mot de passe ... '} secureTextEntry={true} style={styles.input}/>
+        <ImageUpload/>
         <Button
             title="Left button"
             onPress={() => requestRegistre()}
@@ -93,11 +96,10 @@ const Register = ({navigation}) => {
         > S'inscrire </Button>
         <View style={{flex:1, alignItems: 'center',marginBottom: 20}}>
         <Text style={styles.textBottom}> Vous avez un compte ? </Text>
-        <Text style={{color:'   '}} onPress={()=>navigation.navigate('Se connecter')}> Se connecter </Text>
+        <Text style={{color:'#6495ED'}} onPress={()=>navigation.navigate('Se connecter')}> Se connecter </Text>
         </View>
         </ScrollView>);
 }
-
 
 const styles = StyleSheet.create({
     container: {
