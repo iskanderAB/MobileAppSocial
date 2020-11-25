@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Image, View, Platform ,StyleSheet} from 'react-native';
+import { Text, Image, View, Platform, StyleSheet, TouchableHighlight } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
-const  ImageUpload = () =>  {
+const ImageUpload = () => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -20,29 +20,44 @@ const  ImageUpload = () =>  {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
       quality: 1,
+      base64:true
     });
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result);
+      console.log('[imageUpload]' , typeof result.base64)
     }
   };
 
 
   return (
-    <View style={{...styles.container,height : 200,}} onPress={()=> console.log("pressed ! ")}>
-      <Text>Choisir un Image</Text>
-      {image && <Image source={{ uri: image }} style={{ width: '90%', height: 200 , alignItems:"center" , justifyContent :'center' }} />}
-    </View>
+    <TouchableHighlight onPress={() => pickImage()} underlayColor="white">
+      <View style={{ ...styles.container, height: 150}}>
+      {image === null ? <Text style={styles.text}>Choisir un Image</Text> :<Image source={{ uri: image.uri }} style={{ width: '100%', height: '100%', alignItems: "center", justifyContent: 'center', borderRadius: 6}} /> }
+      </View>
+    </TouchableHighlight>
   );
 }
 const styles = StyleSheet.create({
-    container : {
-        width : '100%',
-        backgroundColor : 'red'
-    }
+  container: {
+    width: '90%',
+    backgroundColor: '#f2f2f2',
+    borderRadius: 6,
+    marginBottom : 10,
+    alignSelf :'center',
+    alignItems:'center',
+    flexDirection : 'row',
+    alignContent : "center",
+    justifyContent :'center'
+  },
+  text :{
+    color : 'gray',
+    fontWeight : 'bold',
+    fontSize : 20
+  }
 });
-export default ImageUpload ; 
+export default ImageUpload; 
