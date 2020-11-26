@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useReducer } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Alert } from 'react-native';
+import { View, Alert  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import RootStackScreen from './src/screens/Root/Root';
@@ -11,8 +11,8 @@ import AppScreen from './src/screens/AppScreen/AppScreen';
 import Updater from './updater/Updater';
 import Axios from 'axios';
 
-let ip = '192.168.1.36';
-
+// let ip = '192.168.43.207';
+let ip ='192.168.1.36' ;
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -65,9 +65,10 @@ const App = () => {
                 dispatch({ Type: 'LOGIN', userName: username, token: response.data.token });
                 getData('token').then(res => console.log('token', res));
             }).catch(error => {
+                console.log(error)
                 Alert.alert(
                     "Connexion Error ",
-                    error.response.data.message,
+                    error.message,
                     [
                         { text: "OK", onPress: () => console.log("OK Pressed") }
                     ],
@@ -80,7 +81,8 @@ const App = () => {
         signOut: () => {
             setIsLoading(false);
             dispatch({ Type: 'LOGOUT', userName: null, token: null });
-        }
+        },
+        userInformation : loginState
     }), []);
 
 

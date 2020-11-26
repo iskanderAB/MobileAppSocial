@@ -3,9 +3,7 @@ import { Text, Image, View, Platform, StyleSheet, TouchableHighlight } from 'rea
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
-const ImageUpload = () => {
-  const [image, setImage] = useState(null);
-
+const ImageUpload = ({setImage,image}) => {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -23,7 +21,7 @@ const ImageUpload = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      base64:true
+      base64:true,
     });
     console.log(result);
 
