@@ -5,7 +5,8 @@ import axios from "axios";
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
 
 
-let ip = '192.168.1.36';
+// let ip = '192.168.43.207';
+let ip ='192.168.1.36' ;
 const Register = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");
@@ -13,6 +14,7 @@ const Register = ({navigation}) => {
     const [classe,setClasse] = useState("");
     const [tel,setTel] = useState();
     const [password,setPassword] = useState("");
+    const [image,setImage] = useState(null);
     const [loading , setLoading] = useState(false)
     useEffect(() => {
         console.log('iskander',navigation);
@@ -26,13 +28,17 @@ const Register = ({navigation}) => {
       function requestRegistre() {
         // alert(`Donayla test  ${email}`);
         setLoading(true);
+        // let file = new FormData();
+        // file.append()
+         let UploadingImage = image.base64 ; 
          axios.post(`http://${ip}:8001/api/addUser`,{
             "email": email,
             "password" :password,
             "nom" : nom,
             "prenom" : prenom,
             "telephone": parseInt(tel),
-            "classe" : classe
+            "classe" : classe,
+            "image" : UploadingImage
         },{
             headers:{
                 "Content-Type" : "application/json"
@@ -46,17 +52,14 @@ const Register = ({navigation}) => {
         }).catch(error => {
             setLoading(false);
             console.log('====================================');
-            console.log( error.response);
+            console.log(error);
             console.log('====================================');
-            alert(`${error.response.data.message.detail}`);
         })
     }
-
     return (<ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Text style={styles.text}>Nom</Text>
         <TextInput placeholder={'Nom ... '} style={styles.input} selectionColor={'red'}
-        onChangeText={(text)=> setNom(text)}
-        />
+        onChangeText={(text)=> setNom(text)}/>
         <Text style={styles.text}> Prenom</Text>
         <TextInput placeholder={'Prénom ... '} style={styles.input}
         onChangeText={(text)=> setPrenom(text)}
@@ -82,10 +85,9 @@ const Register = ({navigation}) => {
         />
         <Text style={styles.text}> Confirmer Mot de passe </Text>
         <TextInput placeholder={'Confirmer Mot de passe ... '} secureTextEntry={true} style={styles.input}/>
-        <ImageUpload/>
+        <ImageUpload setImage={setImage} image={image}/>
         <Button
-            title="Left button"
-            onPress={() => requestRegistre()}
+            onPress={requestRegistre}
             mode="contained"
             color='#50aeff'
             loading={loading}

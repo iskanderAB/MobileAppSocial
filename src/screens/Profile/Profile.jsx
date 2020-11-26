@@ -1,32 +1,75 @@
-import React from 'react' ;
-import {StyleSheet, ScrollView, Text, View} from "react-native";
+import React ,{useContext, useEffect, useState} from 'react' ;
+import {StyleSheet, ScrollView, Text, View ,ActivityIndicator, SegmentedControlIOSBase} from "react-native";
+import Axios from 'axios';
 import {Avatar} from "react-native-paper";
 import Post from "../../components/Card/Post";
+import AuthContext from '../../components/Context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+let ip ='192.168.1.36' ;
+const Profile = () => {
+    const [image , setImage] = useState();
+    const [token ,setToken] = useState(null) ;
+    const [name , setName] = useState(null);
+    const [classe , setClasse] = useState(null);
+    const [posts,setPosts] = useState(null);
+    const [id , setId] = useState(null) ; 
+    const getData = async (token)=> {
+        await AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+        } );
+        console.log('tooooken => ' , token);
+        await Axios.get(`http://${ip}:8001/api/user`,{
+            headers : {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response=> {
+            setImage(`http://${ip}:8001/upload/user/${response.data.image}`);
+            setName(response.data.nom);
+            setClasse(response.data.classe);
+            setId(response.data.id)
+        }).catch(error => {
+            console.log(error)
+        });
+        await Axios.get(`http://${ip}:8001/api/posts`,{
+            headers : {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            setPosts(response.data);
+        }).catch(error => console.log("\n",error));
+    }
+    useEffect(() => {
+            getData(token)
+    },[token]);
 
-const Profile = () =>
-    <View style={styles.container}>
+    return (  <View style={styles.container}>
         <View style={styles.header}>
             <Text style={styles.text}> Profile </Text>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} >
-            <Avatar.Image size={150} style={styles.image}
-                          source={{uri: 'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg'}}/>
-            <Text style={styles.textName}> Foulen el Foulani </Text>
-            <Text style={styles.textProfileType}> Etudiant</Text>
-            <Text style={styles.textClass}> DSI </Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+            {image === null ? <ActivityIndicator style={styles.image}/> :  <Avatar.Image size={150} style={styles.image}
+                        source={{uri:image}}/>
+            }
+            <Text style={styles.textName}> {name} </Text>
+            { classe == null || classe.split(" ").join("") === '' ?  <Text style={styles.textProfileType}>Enseignante</Text> : <Text style={styles.textProfileType}> Etudiant</Text>}
+            <Text style={styles.textClass}> {classe} </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={{color: "#d6d6d6", fontWeight: 'bold'}}> Mes Derniers statuts </Text><View
                 style={styles.line}></View>
             </View>
             <ScrollView showsVerticalScrollIndicator={false} invertStickyHeaders={true}>
-                <Post/>
-                <Post/>
-                <Post/>
-                <Post/>
-                <Post/>
+                {posts ? 
+                    posts.filter(post=> post.createdBy.id === id).map(post => {
+                       return <Post avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
+                :
+                    <ActivityIndicator  size='small'/>
+                }
+               
             </ScrollView>
         </ScrollView>
-    </View>;
+    </View>);
+}
+  
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
@@ -74,3 +117,6 @@ const styles = StyleSheet.create({
     }
 });
 export default Profile;
+
+
+// <Post avatar={image} content={content} userImage={userImage} userFullName={userFullName} />

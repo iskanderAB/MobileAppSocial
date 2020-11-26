@@ -15,6 +15,7 @@ const LoginScreen = ({navigation}) => {
             <TextInput style={styles.input}
                 value={username}
                 placeholder="Entrer votre Email ..."
+                keyboardType={'email-address'}
                 onChangeText={text => setUsername(text)} />
             <Text style={styles.text}> Mot de passe  </Text>
             <TextInput style={styles.input}
@@ -23,7 +24,6 @@ const LoginScreen = ({navigation}) => {
                 placeholder="Tapez votre mot de passe ... "
                 onChangeText={text => setPassword(text)} />
             <Button
-                title="Left button"
                 onPress={() => {
                     setLoading(true);
                     if (password == null || username == null || password == "" || username == "") {
