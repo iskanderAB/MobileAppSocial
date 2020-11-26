@@ -27,7 +27,6 @@ const AppScreen = (props) => {
                     } else if (route.name === 'Settings') {
                         return <Entypo name="dots-three-vertical" size={30} color={color} />
                     }
-
                     // You can return any component that you like here!
                     return <Ionicons name={iconName} size={37} color={color} />;
                 },

@@ -1,7 +1,9 @@
-import React from 'react' ; 
+import React from 'react' ;
 import { createStackNavigator } from "@react-navigation/stack";
 import Notifications from "../Notifications/Notifications";
 import Home from '../Home/Home';
+import UpdateProfile from "../UpdateProfile/UpdateProfile";
+import UpdatePost from "../UpdatePost/UpdatePost";
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = (props) => {
@@ -13,6 +15,19 @@ const HomeStackScreen = (props) => {
                     headerShown: false,
                 }}
                 component={Home} />
+            <HomeStack.Screen name={'Parametres'}
+                              options={{
+                                  title: "Paramétres",
+                                  headerShown: true,
+                              }}
+                              component={UpdateProfile} />
+            <HomeStack.Screen name={'UpdatePost'}
+                              options={{
+                                  title: "Modifier Status",
+                                  headerShown: true,
+                              }}
+                              component={UpdatePost} />
+
             <HomeStack.Screen name={'Notifications'}
                 options={{
                     headerShown: false
@@ -38,4 +53,4 @@ const HomeStackScreen = (props) => {
         </HomeStack.Navigator>
     );
 };
-export default HomeStackScreen ; 
+export default HomeStackScreen ;

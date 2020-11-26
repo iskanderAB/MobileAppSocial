@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../Login/Login';
 import Register from '../Register/Refgister';
+import UpdateProfile from "../UpdateProfile/UpdateProfile";
 
 
 
