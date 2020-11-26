@@ -12,7 +12,7 @@ import Updater from './updater/Updater';
 import Axios from 'axios';
 
 // let ip = '192.168.43.207';
-let ip ='192.168.1.36' ;
+let ip ='192.168.0.53' ;
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -92,18 +92,22 @@ const App = () => {
         }, 1000)
     }, []);
 
-    useEffect(() => {
+    const backUpToken= () => { 
         if (loginState.userToken === null)
-            setTimeout(async () => {
-                let token ; 
-                token = null ; 
-                try{
-                    token = await AsyncStorage.getItem('token') ; 
-                }catch(error){
-                    alert(error)
-                }
-                dispatch({Type:'RETRIEVE_TOKEN' ,token : token })
-            },1000)
+        setTimeout(async () => {
+            let token ; 
+            token = null ; 
+            try{
+                token = await AsyncStorage.getItem('token') ; 
+            }catch(error){
+                alert(error)
+            }
+            dispatch({Type:'RETRIEVE_TOKEN' ,token : token })
+        },1000)
+    }
+
+    useEffect(() => {
+        backUpToken();
     }, []);
 
     if (isloading) {

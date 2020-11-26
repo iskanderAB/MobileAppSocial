@@ -1,11 +1,13 @@
 import React ,{useContext, useEffect, useState} from 'react' ;
-import {StyleSheet, ScrollView, Text, View ,ActivityIndicator, SegmentedControlIOSBase} from "react-native";
+import {StyleSheet, ScrollView, Text, View ,ActivityIndicator, RefreshControl} from "react-native";
 import Axios from 'axios';
 import {Avatar} from "react-native-paper";
 import Post from "../../components/Card/Post";
 import AuthContext from '../../components/Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-let ip ='192.168.1.36' ;
+
+
+let ip ='192.168.0.53' ;
 const Profile = () => {
     const [image , setImage] = useState();
     const [token ,setToken] = useState(null) ;
@@ -13,6 +15,8 @@ const Profile = () => {
     const [classe , setClasse] = useState(null);
     const [posts,setPosts] = useState(null);
     const [id , setId] = useState(null) ; 
+    const [refreshing, setRefreshing] = useState(true);
+
     const getData = async (token)=> {
         await AsyncStorage.getItem('token').then(res => {
             setToken(res);
@@ -37,7 +41,13 @@ const Profile = () => {
         }).then(response => {
             setPosts(response.data);
         }).catch(error => console.log("\n",error));
+        setRefreshing(false);
     }
+    const onRefresh = React.useCallback(() => {
+        console.log(token);
+        setRefreshing(true);
+        getData(token);
+    }, []);
     useEffect(() => {
             getData(token)
     },[token]);
@@ -46,7 +56,10 @@ const Profile = () => {
         <View style={styles.header}>
             <Text style={styles.text}> Profile </Text>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}  
+                    refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }             >
             {image === null ? <ActivityIndicator style={styles.image}/> :  <Avatar.Image size={150} style={styles.image}
                         source={{uri:image}}/>
             }
@@ -59,8 +72,8 @@ const Profile = () => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false} invertStickyHeaders={true}>
                 {posts ? 
-                    posts.filter(post=> post.createdBy.id === id).map(post => {
-                       return <Post avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
+                    posts.reverse().filter(post=> post.createdBy.id === id).map((post , index) => {
+                       return <Post key={index} type={post.type} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
                 :
                     <ActivityIndicator  size='small'/>
                 }

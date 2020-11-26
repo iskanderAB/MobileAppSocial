@@ -7,12 +7,10 @@ import {
     ScrollView,
     CheckBox,
     TouchableOpacity,
-    Picker,
-    RefreshControl,
-    Pressable,
     Alert
 } from "react-native";
 import {Button} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import {MaterialIcons} from "@expo/vector-icons";
 
@@ -23,41 +21,65 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 
 
-const Post = () => {
+const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
+    const [token ,setToken] = useState(null) ;
     const [status, setStatus] = useState();
     const [nomEven, setNomEven] = useState();
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [image , setImage] = useState(null);
 
-    let ip = '192.168.1.36';
+    let ip = '192.168.0.53';
 
+    const getData = async ()=> {
+        await AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+        } );
+    }
+    useEffect(()=> {
+        getData();
+    },[])
 
+    useEffect(()=>{
+        console.log(isSelected)
+    },[isSelected]);
     function requestPost() {
         // alert(`Donayla test  ${email}`);
-        setLoading(true);
-        axios.post(`http://${ip}:8001/api/addPost`,{
-            "content": status,
-            "type" :status,
+        let data = isSelected ===true ? {
+            content : status,
+            type : 'event',
+            image : image.base64,
+            date : date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear(),
+            title : nomEven
+        }:
+        { 
+            content : status , 
+            type : 'post',
+            image : image.base64
+        };
 
-        },{
+        console.log('[data]', data.type);
+        setLoading(true);
+        axios.post(`http://${ip}:8001/api/addPost`,data,{
             headers:{
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${token}`
             }
         }).then(function (response) {
             // handle success
             setTimeout(()=> navigation.navigate("Home"),500)
             setTimeout(()=>{
-                Alert.alert("utilisateur ajouté avec succès ♥");
+                Alert.alert("post ajouté avec succès ♥");
                 setLoading(false)},200);
         }).catch(error => {
             setLoading(false);
             console.log('====================================');
             console.log(error.response);
             console.log('====================================');
-            alert(`${error.response.data.message.detail}`);
+            alert(`${error}`);
         })
     }
 
@@ -135,7 +157,7 @@ const Post = () => {
                 />
         </View>
 
-        <ImageUpload/>
+        <ImageUpload image={image} setImage={setImage} />
 
         <View style={{ flexDirection:'row',justifyContent: 'space-between'}}>
             <Text style={{marginVertical: 10,
