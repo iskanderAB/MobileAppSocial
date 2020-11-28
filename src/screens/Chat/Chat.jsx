@@ -7,7 +7,6 @@ import {StyleSheet, Text, TextInput, View, LogBox, Button, FlatList} from 'react
 import * as firebase from 'firebase';
 import 'firebase/firestore'
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyBcQ2B7YUnY7iuHOLflpFlnw99qK1Orpko",
     authDomain: "react-native-chat-d13ee.firebaseapp.com",
@@ -18,26 +17,21 @@ const firebaseConfig = {
     appId: "1:225354470560:web:cc9f4abac063bbc304a5c5"
 };
 
-
 if(firebase.apps.length === 0) {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 }
 
-
 LogBox.ignoreLogs(['Setting a timer']);
-
 
 const db = firebase.firestore();
 
 const chatsRef = db.collection('chats');
 
-
 const Chat = () =>  {
     const [user, setUser] = useState(null);
     const [name, setName] = useState('');
     const [messages, setMessages] = useState([])
-
 
     useEffect(() => {
         readUser();
@@ -58,7 +52,6 @@ const Chat = () =>  {
         setMessages((previousMessages) => GiftedChat.append(previousMessages, messages))
     }, [messages])
 
-
     async function readUser() {
         const user = await AsyncStorage.getItem('user');
         if (user) {
@@ -78,7 +71,6 @@ const Chat = () =>  {
         await Promise.all(writes)
     }
 
-
     // if(!user) {
     //     return (
     //         <LoginScreen value={name} onChangeText={setName} onPress={handlePress}/>
@@ -88,7 +80,7 @@ const Chat = () =>  {
     return (//<GiftedChat isTyping={true} showUserAvatar={false} messages={props.messages} user={props.user} onSend={props.onSend} />
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{fontWeight:'bold',fontSize:30,marginBottom :10}}> Chattes  </Text>
+                <Text style={{fontWeight:'bold',fontSize:30,marginBottom :10}}> Chat </Text>
             </View>
          <GiftedChat messages={messages} user={user} onSend={handleSend} />
         </View>
@@ -124,5 +116,4 @@ const styles = StyleSheet.create({
         marginBottom : 20
     }
 });
-
 export default Chat;

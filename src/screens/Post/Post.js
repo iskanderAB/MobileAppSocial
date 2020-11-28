@@ -20,7 +20,7 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
 
-let ip ='192.168.1.36';
+let ip ='192.168.43.207';
 const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -173,16 +173,7 @@ const Post = ({navigation}) => {
                 />
         </View>
         <View style={styles.file}>
-        <IconButton
-                    icon='attachment'
-                    //heart-outline
-                    color={Colors.red500}
-                    text={35}
-                    title="hhh"
-                    onPress={documentPicker}
-                    style={{marginLeft : -6}}
-                />
-                <Text style={{color : 'gray'}} onPress={documentPicker} >  {nameOfFile !== null ? nameOfFile : 'Choisir un Fichier'} </Text>
+            
         </View>
         <ImageUpload image={image} setImage={setImage} />
 

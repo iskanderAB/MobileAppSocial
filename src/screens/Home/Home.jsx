@@ -6,12 +6,11 @@ import Post from "../../components/Card/Post";
 import { MaterialIcons } from '@expo/vector-icons';
 
 
-let ip ='192.168.1.36' ;
+let ip ='192.168.43.207' ;
 const Home = ({ navigation }) => {
     const [refreshing, setRefreshing] = useState(true);
     const [token ,setToken] = useState(null) ;
     const [posts,setPosts] = useState(null);
-
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         getData(token)

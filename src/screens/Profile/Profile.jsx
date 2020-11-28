@@ -7,7 +7,7 @@ import AuthContext from '../../components/Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-let ip ='192.168.1.36' ;
+let ip ='192.168.43.207' ;
 const Profile = () => {
     const [image , setImage] = useState();
     const [token ,setToken] = useState(null) ;
