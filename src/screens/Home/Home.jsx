@@ -6,7 +6,7 @@ import Post from "../../components/Card/Post";
 import { MaterialIcons } from '@expo/vector-icons';
 
 
-let ip ='192.168.0.53' ;
+let ip ='192.168.1.36' ;
 const Home = ({ navigation }) => {
     const [refreshing, setRefreshing] = useState(true);
     const [token ,setToken] = useState(null) ;
@@ -16,7 +16,6 @@ const Home = ({ navigation }) => {
         setRefreshing(true);
         getData(token)
     }, []);
-
 
     const getData = async (token) => {
         await AsyncStorage.getItem('token').then(res => {
@@ -28,18 +27,16 @@ const Home = ({ navigation }) => {
                 Authorization: `Bearer ${token}`
             }
         }).then(response => {
-            setPosts(response.data);
+            setPosts(response.data.map(v=>v).reverse());
+            console.log( typeof response.data)
             setRefreshing(false)
-        }).catch(error => console.log("\n", error));
+        }).catch(error => console.log("\n", error.response));
     }
-
     useEffect(() => {
         getData(token)
     }, [token]);
-
     console.log(navigation);
     const [notificationBackColor, setNotificationBackColor] = useState('red');
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -62,8 +59,8 @@ const Home = ({ navigation }) => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }            >
                 {posts ? 
-                     posts.reverse().map((post , index) => {
-                       return <Post key={index} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
+                     posts.map((post , index) => {
+                       return <Post key={index} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`}  content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } type={post.type} /> })
                 :
                 null
                 }

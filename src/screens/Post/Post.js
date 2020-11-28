@@ -13,14 +13,14 @@ import {Button} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import {MaterialIcons} from "@expo/vector-icons";
-
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
-
 import { Fontisto } from '@expo/vector-icons';
+import { IconButton, Colors } from 'react-native-paper';
 
-
+let ip ='192.168.1.36';
 const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -31,8 +31,8 @@ const Post = ({navigation}) => {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [image , setImage] = useState(null);
-
-    let ip = '192.168.0.53';
+    const [document ,setDocument] = useState(null);
+    const [nameOfFile , setNameOfFile] = useState(null);
 
     const getData = async ()=> {
         await AsyncStorage.getItem('token').then(res => {
@@ -47,20 +47,24 @@ const Post = ({navigation}) => {
         console.log(isSelected)
     },[isSelected]);
     function requestPost() {
-        // alert(`Donayla test  ${email}`);
+        // // alert(`Donayla test  ${email}`);
+        // let docToUpload = new FormData();
+        // docToUpload.append('iskander_file',document);
+        // console.log(docToUpload);
         let data = isSelected ===true ? {
             content : status,
             type : 'event',
-            image : image.base64,
+            image : image ?  image.base64 : null ,
             date : date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear(),
-            title : nomEven
+            title : nomEven,
+            document : document
         }:
         { 
             content : status , 
             type : 'post',
-            image : image.base64
+            image :  image ?  image.base64 : null,
+            document : document
         };
-
         console.log('[data]', data.type);
         setLoading(true);
         axios.post(`http://${ip}:8001/api/addPost`,data,{
@@ -70,33 +74,45 @@ const Post = ({navigation}) => {
             }
         }).then(function (response) {
             // handle success
+            console.log("Response =====> " , response.data);
             setTimeout(()=> navigation.navigate("Home"),500)
             setTimeout(()=>{
-                Alert.alert("post ajouté avec succès ♥");
+                Alert.alert(`${response.data}`);
                 setLoading(false)},200);
         }).catch(error => {
             setLoading(false);
             console.log('====================================');
             console.log(error.response);
             console.log('====================================');
-            alert(`${error}`);
+            alert(`${error.response.data}`);
         })
     }
-
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'Android');
         setDate(currentDate);
     };
-
     const showMode = (currentMode) => {
         setShow(true);
         setMode(currentMode);
     };
-
     const showDatepicker = () => {
         showMode('date');
     };
+    const documentPicker = async () =>  {
+            let doc = await DocumentPicker.getDocumentAsync({
+                type: "*/*"
+            });
+            alert(doc);
+            console.log("docccccc",doc.uri);
+            const  fileString = await FileSystem.readAsStringAsync(doc.uri,{encoding: FileSystem.EncodingType.base64});
+            //console.log('file =>' ,fileString)
+            let info = await FileSystem.getInfoAsync(doc.uri, {size : true})
+
+            console.log( 'info ==> ' ,  info)
+            setDocument("data:application/pdf;base64,"+fileString);
+            setNameOfFile(doc.name);
+    }
 
     const ifEvent = () => {
         return (
@@ -111,9 +127,8 @@ const Post = ({navigation}) => {
                 borderRadius: 50,}} selectionColor={'red'}
                        onChangeText={(text)=> setNomEven(text)}
             />
-
              <Text style={styles.text}> Date de l'Evènement </Text>
-
+                   
                     <View>
                         <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
                             <Text style={{fontWeight:"700",color: '#606060'}}>{date.getMonth()}/{date.getDate()}/{date.getFullYear()}</Text>
@@ -136,6 +151,7 @@ const Post = ({navigation}) => {
     }
 
 
+
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.header}>
@@ -156,7 +172,18 @@ const Post = ({navigation}) => {
                        onChangeText={(text)=> setStatus(text)}
                 />
         </View>
-
+        <View style={styles.file}>
+        <IconButton
+                    icon='attachment'
+                    //heart-outline
+                    color={Colors.red500}
+                    text={35}
+                    title="hhh"
+                    onPress={documentPicker}
+                    style={{marginLeft : -6}}
+                />
+                <Text style={{color : 'gray'}} onPress={documentPicker} >  {nameOfFile !== null ? nameOfFile : 'Choisir un Fichier'} </Text>
+        </View>
         <ImageUpload image={image} setImage={setImage} />
 
         <View style={{ flexDirection:'row',justifyContent: 'space-between'}}>
@@ -257,6 +284,10 @@ const styles = StyleSheet.create({
     textBottom : {
         flex: 1,
         justifyContent: 'center'
+    },
+    file :{
+        flexDirection : 'row',
+        alignItems : 'center'
     }
 });
 export default Post;

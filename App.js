@@ -12,7 +12,7 @@ import Updater from './updater/Updater';
 import Axios from 'axios';
 
 // let ip = '192.168.43.207';
-let ip ='192.168.0.53' ;
+let ip ='192.168.1.36' ;
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -84,8 +84,7 @@ const App = () => {
         },
         userInformation : loginState
     }), []);
-
-
+    
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)

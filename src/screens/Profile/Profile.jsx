@@ -7,7 +7,7 @@ import AuthContext from '../../components/Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-let ip ='192.168.0.53' ;
+let ip ='192.168.1.36' ;
 const Profile = () => {
     const [image , setImage] = useState();
     const [token ,setToken] = useState(null) ;
@@ -39,7 +39,7 @@ const Profile = () => {
                 Authorization: `Bearer ${token}`
             }
         }).then(response => {
-            setPosts(response.data);
+            setPosts(response.data.map(v=>v).reverse());
         }).catch(error => console.log("\n",error));
         setRefreshing(false);
     }
@@ -72,7 +72,7 @@ const Profile = () => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false} invertStickyHeaders={true}>
                 {posts ? 
-                    posts.reverse().filter(post=> post.createdBy.id === id).map((post , index) => {
+                    posts.filter(post=> post.createdBy.id === id).map((post , index) => {
                        return <Post key={index} type={post.type} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
                 :
                     <ActivityIndicator  size='small'/>
