@@ -1,8 +1,44 @@
-import React from 'react';
-import {StyleSheet, ScrollView, Text, View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, ScrollView, Text, View, RefreshControl} from "react-native";
 import Notification from "../../components/Notification/Notifcation";
+import Post from "../../components/Card/Post";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Axios from "axios";
+
+let ip ='192.168.1.36' ;
 
 const Notifications = () => {
+
+    const [refreshing, setRefreshing] = useState(true);
+    const [token ,setToken] = useState(null) ;
+    const [posts,setPosts] = useState(null);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        getData(token)
+
+    }, []);
+
+    const getData = async (token) => {
+        await AsyncStorage.getItem('token').then(res => {
+            Axios.get(`http://${ip}:8001/api/posts`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(response => {
+                setPosts(response.data.map(v=>v).reverse());
+                console.log( typeof response.data)
+                setRefreshing(false)
+            }).catch(error => console.log("\n", error.response));
+            setToken(res);
+        });
+        console.log('tooooken => ', token);
+
+    }
+    useEffect(() => {
+        getData(token)
+    }, [token]);
+
     return (
         <View  style={styles.container} >
             <View style={styles.header}>
@@ -12,43 +48,16 @@ const Notifications = () => {
                 <Text style={{color:"#d6d6d6",fontWeight: 'bold'}}> Derniers Notifications</Text>
                 <View style={styles.line}/>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
-                <Notification/>
+            <ScrollView showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }            >
+                {posts ?
+                    posts.map((post , index) => {
+                        return <Notification key={index} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`}  content={post.content}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom}/> })
+                    :
+                    null
+                }
             </ScrollView>
         </View>
     )

@@ -34,6 +34,8 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         getData(token)
     }, [token]);
+
+    console.log(posts);
     console.log(navigation);
     const [notificationBackColor, setNotificationBackColor] = useState('red');
     return (
@@ -57,7 +59,7 @@ const Home = ({ navigation }) => {
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }            >
-                {posts ? 
+                {posts ?
                      posts.map((post , index) => {
                        return <Post key={index} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`}  content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } type={post.type} /> })
                 :
