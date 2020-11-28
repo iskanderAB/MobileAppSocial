@@ -46,6 +46,7 @@ const Post = ({navigation}) => {
     useEffect(()=>{
         console.log(isSelected)
     },[isSelected]);
+
     function requestPost() {
         // // alert(`Donayla test  ${email}`);
         // let docToUpload = new FormData();
@@ -59,8 +60,8 @@ const Post = ({navigation}) => {
             title : nomEven,
             document : document
         }:
-        { 
-            content : status , 
+        {
+            content : status ,
             type : 'post',
             image :  image ?  image.base64 : null,
             document : document
@@ -87,6 +88,7 @@ const Post = ({navigation}) => {
             alert(`${error.response.data}`);
         })
     }
+
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'Android');
@@ -128,7 +130,7 @@ const Post = ({navigation}) => {
                        onChangeText={(text)=> setNomEven(text)}
             />
              <Text style={styles.text}> Date de l'Evènement </Text>
-                   
+
                     <View>
                         <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
                             <Text style={{fontWeight:"700",color: '#606060'}}>{date.getMonth()}/{date.getDate()}/{date.getFullYear()}</Text>
