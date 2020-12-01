@@ -2,20 +2,22 @@ import React, {useState} from 'react';
 import {Avatar, Card, Title, Paragraph} from 'react-native-paper';
 import {StyleSheet , Text,TouchableOpacity ,ActivityIndicator} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
-
+import { useNavigation } from '@react-navigation/native';
 
 const Post = ({avatar, userFullName , content ,postImage ,type , title }) => {
     const [love , setLove] = useState(false);
     const [participate , setParticipate] = useState(false);
     const LeftContent = () => <Avatar.Image  size={50} source={{uri:avatar}}/>
+    const navigation = useNavigation();
     return (
-        <Card style={styles.post}>
+
+        <Card  style={styles.post}  onPress={type === 'event' ? ()=>navigation.navigate('EventDetail') : null  } >
             <Card.Title title={userFullName} style={{paddingLeft :3}} subtitle="Il ya 2 heurs " left={LeftContent}/>
             <Card.Content style={{paddingHorizontal :5}}>
                 { type === 'event' ?  <Text style={styles.text}> {title} </Text> : null }
                 <Paragraph>{content}</Paragraph>
             </Card.Content>
-            <Card.Cover  source={{uri:postImage}}/>
+            <Card.Cover  source={{uri:postImage}}  />
             <Card.Actions style={{padding:0,flexDirection:'row'}}>
                 <IconButton
                     icon={love ? 'heart' : 'heart-outline'}
@@ -26,14 +28,16 @@ const Post = ({avatar, userFullName , content ,postImage ,type , title }) => {
                     style={{marginLeft : 0}}
                 />
                 <Text style={{paddingLeft:0,color: 'gray'}}> 25 </Text>
-                <TouchableOpacity
+                { type === 'event' ?   <TouchableOpacity
                     style={{...styles.button,backgroundColor: participate ? '#50aeff' : "white",}}
-                    onPress={()=>setParticipate(!participate)}
+
                 >
                     <Text style={{color : participate ? "white" : "#50aeff"}}>Participer</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> : null }
+
             </Card.Actions>
         </Card>
+
     );
 }
 const styles = StyleSheet.create({
@@ -50,12 +54,12 @@ const styles = StyleSheet.create({
         borderColor : '#50aeff'
     },
     text: {
-        color: '#33A8FF', 
+        color: '#33A8FF',
         fontSize : 12,
         fontWeight :'bold',
         fontStyle : 'italic',
         textDecorationLine : 'underline'
-        
+
     }
 })
 export default Post;

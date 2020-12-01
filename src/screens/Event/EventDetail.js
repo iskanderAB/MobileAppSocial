@@ -1,0 +1,220 @@
+import React, {useEffect, useState} from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    ScrollView,
+    CheckBox,
+    TouchableOpacity,
+    Image,
+    Alert
+} from "react-native";
+import {Button} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
+import {MaterialIcons} from "@expo/vector-icons";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
+import ImageUpload from "../../components/ImagePicker/ImageUpload";
+import { Fontisto } from '@expo/vector-icons';
+import { IconButton, Colors } from 'react-native-paper';
+
+let ip ='192.168.1.5' ;
+
+const EventDetail = ({navigation}) => {
+    const [isSelected,setSelection] = useState(false);
+    const [loading , setLoading] = useState(false);
+    const [token ,setToken] = useState(null) ;
+    const [status, setStatus] = useState();
+    const [nomEven, setNomEven] = useState();
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+    const [image , setImage] = useState(null);
+    const [document ,setDocument] = useState(null);
+    const [nameOfFile , setNameOfFile] = useState(null);
+
+    const getData = async ()=> {
+        await AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+        } );
+    }
+    useEffect(()=> {
+        getData();
+    },[])
+
+    useEffect(()=>{
+        console.log(isSelected)
+    },[isSelected]);
+
+
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'Android');
+        setDate(currentDate);
+    };
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+    const showDatepicker = () => {
+        showMode('date');
+    };
+    const documentPicker = async () =>  {
+        let doc = await DocumentPicker.getDocumentAsync({
+            type: "/"
+        });
+        alert(doc);
+        console.log("docccccc",doc.uri);
+        const  fileString = await FileSystem.readAsStringAsync(doc.uri,{encoding: FileSystem.EncodingType.base64});
+        //console.log('file =>' ,fileString)
+        let info = await FileSystem.getInfoAsync(doc.uri, {size : true})
+
+        console.log( 'info ==> ' ,  info)
+        setDocument("data:application/pdf;base64,"+fileString);
+        setNameOfFile(doc.name);
+    }
+
+
+
+    return (
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+
+            <Image
+                style={styles.image}
+                source={{
+                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                }}
+            />
+
+            <View style={styles.container1}>
+
+
+                <View >
+                    <Text style={{marginVertical: 10,
+                        color: '#606060',
+                        fontWeight:'700',
+                        fontSize:23}}> Event name </Text>
+
+
+                    <Text style={styles.text}> </Text>
+
+                    {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            mode={mode}
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChange}
+                        />
+                    )}
+                </View>
+                <Button
+                    title="Left button"
+                    onPress={() => 0}
+                    mode="contained"
+                    color='#50aeff'
+                    loading={loading}
+                    style={styles.button}
+                    labelStyle={styles.label}
+                    contentStyle={{height:60}}
+                    onPress={()=>requestPost()}
+                > Ajouter </Button>
+            </View>
+
+        </ScrollView>);
+}
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingHorizontal: 0
+    },
+    container1: {
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingHorizontal: 20
+    },
+    image : {
+      height : 300,
+      width : "100%"
+    },
+    header: {
+        //backgroundColor : 'red',
+        height: 50,
+        width: '100%',
+        marginTop: 50,
+        paddingHorizontal: 10,
+        alignSelf: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    inputContainer  : {
+        height: 100,
+        width: '100%',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10,
+        borderColor: '#bebcbc',
+        marginVertical: 10,
+
+    },
+    dateBut : {
+        flexDirection:'row',
+        justifyContent: 'space-between',
+        alignItems: "center",
+        padding: 15,
+        borderColor: '#bebcbc',
+        borderWidth: 1,
+        borderRadius: 50,
+
+    },
+    datefin : {
+        flexDirection:'row',
+        justifyContent: 'space-between',
+        alignItems: "center",
+        padding: 15,
+        borderColor: '#bebcbc',
+        borderWidth: 1,
+        borderRadius: 50,
+
+    },
+    input: {
+        height:400,
+        width: '100%',
+        borderWidth: 1,
+        padding: 15,
+        borderColor: '#bebcbc',
+        marginBottom: 5,
+        borderRadius: 50,
+    },
+    text: {
+        marginVertical: 10,
+        color: '#606060',
+    },
+    button: {
+        borderRadius: 50,
+        height: 60,
+        marginBottom: 20,
+        top: -30
+    },
+    label : {
+        color: 'white'
+    },
+    textBottom : {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    file :{
+        flexDirection : 'row',
+        alignItems : 'center'
+    }
+});
+export default EventDetail;
