@@ -12,14 +12,10 @@ const Others = ({navigation}) => {
             </View>
             <Text style={styles.text}>Evènements</Text>
             <Text style={styles.text} onPress={()=>navigation.navigate('Parametres')}>Paramétres</Text>
+            <Text style={styles.text} onPress={()=>navigation.navigate('Stat')}>Stat</Text>
+            <Text style={styles.text} onPress={()=>navigation.navigate('Offre') }>Ajouter offre de stage  </Text>
             <Text style={styles.text} onPress={()=>navigation.navigate('UpdatePost')}>Modifier status</Text>
-            <Text
-                style={styles.text}
-                onPress={() => signOut()}
-            >
-                Se deconnecter
-            </Text>
-
+            <Text style={styles.text} onPress={() => signOut()} >Se deconnecter </Text>
         </View>
     );
 }

@@ -8,8 +8,6 @@ const Stat = () => {
     const [nom,setNom] = useState("");
     const [diplome,setDiplome] = useState("2020");
 
-
-
     const [loading , setLoading] = useState(false)
     return (<ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Text style={{fontSize : 23, fontWeight : '600',marginVertical: 10 , top : 5}}> La premiere Embauche </Text>
@@ -18,26 +16,27 @@ const Stat = () => {
                    onChange={(text)=> setNom(text)}
         />
         <View style={{flex:1, flexDirection:'row',alignItems : 'center'}}>
-            <Text style={styles.text}> Nombre de mois de recherche </Text>
+            <Text style={styles.text}> Année de recrutement </Text>
             <Picker
                 selectedValue={diplome}
-                style={{ left:20,height: 50, width: '100%' }}
+                style={{left:50,height: 50, width: 100}}
                 onValueChange={(itemValue, itemIndex) => setDiplome(itemValue)}
             >
-                <Picker.Item label="0 mois" value="0" />
-                <Picker.Item label="1 mois" value="1" />
-                <Picker.Item label="2 mois" value="2" />
-                <Picker.Item label="3 mois" value="3" />
-                <Picker.Item label="5 mois" value="4" />
-                <Picker.Item label="6 mois" value="5" />
+                <Picker.Item label="2014" value="0" />
+                <Picker.Item label="2015" value="1" />
+                <Picker.Item label="2016" value="2" />
+                <Picker.Item label="2017" value="3" />
+                <Picker.Item label="2018" value="4" />
+                <Picker.Item label="2019" value="5" />
 
             </Picker>
         </View>
 
         <Text style={styles.text}> Durée par mois </Text>
-        <TextInput placeholder={'Durée par mois'} style={styles.input} selectionColor={'red'}
+        <TextInput placeholder={'Nombre de mois'} style={styles.input} selectionColor={'red'}
                    onChange={(text)=> setNom(text)}
         />
+
 
         <Text style={styles.text}> Poste </Text>
         <TextInput placeholder={'Poste'} style={styles.input} selectionColor={'red'}

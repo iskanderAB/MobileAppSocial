@@ -15,14 +15,9 @@ import {
 import {Button} from 'react-native-paper';
 import axios from "axios";
 import {MaterialIcons} from "@expo/vector-icons";
-
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
-
 import { Fontisto } from '@expo/vector-icons';
-
-
 const UpdatePost = () => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -31,61 +26,9 @@ const UpdatePost = () => {
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [image,setImage] = useState(null);
 
-    let ip = '192.168.1.36';
-
-
-    function updatePost() {
-        // alert(`Donayla test  ${email}`);
-        setLoading(true);
-        axios.post(`http://${ip}:8001/api/addPost`,{
-            "content": status,
-            "type" :status,
-
-        },{
-            headers:{
-                "Content-Type" : "application/json"
-            }
-        }).then(function (response) {
-            // handle success
-            setTimeout(()=> navigation.navigate("Home"),500)
-            setTimeout(()=>{
-                Alert.alert("utilisateur ajouté avec succès ♥");
-                setLoading(false)},200);
-        }).catch(error => {
-            setLoading(false);
-            console.log('====================================');
-            console.log(error.response);
-            console.log('====================================');
-            alert(`${error.response.data.message.detail}`);
-        })
-    }
-
-    function deletePost() {
-        // alert(`Donayla test  ${email}`);
-        setLoading(true);
-        axios.post(`http://${ip}:8001/api/addPost`,{
-            "content": status,
-            "type" :status,
-
-        },{
-            headers:{
-                "Content-Type" : "application/json"
-            }
-        }).then(function (response) {
-            // handle success
-            setTimeout(()=> navigation.navigate("Home"),500)
-            setTimeout(()=>{
-                Alert.alert("utilisateur ajouté avec succès ♥");
-                setLoading(false)},200);
-        }).catch(error => {
-            setLoading(false);
-            console.log('====================================');
-            console.log(error.response);
-            console.log('====================================');
-            alert(`${error.response.data.message.detail}`);
-        })
-    }
+    let ip ='192.168.1.36' ;
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -142,12 +85,12 @@ const UpdatePost = () => {
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <Text style={{
                     fontWeight: 'bold',
                     fontSize: 20,
                 }}> Modifier status </Text>
-            </View>
+            </View> */}
 
             <View style={styles.container1}>
                 <View style={styles.inputContainer} >
@@ -161,7 +104,7 @@ const UpdatePost = () => {
                     />
                 </View>
 
-                <ImageUpload/>
+                <ImageUpload setImage={setImage} image={image}/>
 
                 <View style={{ flexDirection:'row',justifyContent: 'space-between'}}>
                     <Text style={{marginVertical: 10,

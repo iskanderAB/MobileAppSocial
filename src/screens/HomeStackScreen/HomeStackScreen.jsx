@@ -1,9 +1,11 @@
-import React from 'react' ;
+import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import Notifications from "../Notifications/Notifications";
 import Home from '../Home/Home';
 import UpdateProfile from "../UpdateProfile/UpdateProfile";
 import UpdatePost from "../UpdatePost/UpdatePost";
+import Stat from '../Stat/Stat';
+import OffreStage from '../OffreStage/OffreStage';
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = (props) => {
@@ -16,17 +18,29 @@ const HomeStackScreen = (props) => {
                 }}
                 component={Home} />
             <HomeStack.Screen name={'Parametres'}
-                              options={{
-                                  title: "Paramétres",
-                                  headerShown: true,
-                              }}
-                              component={UpdateProfile} />
+                options={{
+                    title: "Paramétres",
+                    headerShown: true,
+                }}
+                component={UpdateProfile} />
             <HomeStack.Screen name={'UpdatePost'}
-                              options={{
-                                  title: "Modifier Status",
-                                  headerShown: true,
-                              }}
-                              component={UpdatePost} />
+                options={{
+                    title: "Modifier Status",
+                    headerShown: true,
+                }}
+                component={UpdatePost} />
+            <HomeStack.Screen name={'Stat'}
+                options={{
+                    title: "Modifier Status",
+                    headerShown: true,
+                }}
+                component={Stat} />
+            <HomeStack.Screen name={'Offre'}
+                options={{
+                    title: "Offre de stage ",
+                    headerShown: true,
+                }}
+                component={OffreStage} />
 
             <HomeStack.Screen name={'Notifications'}
                 options={{
@@ -53,4 +67,4 @@ const HomeStackScreen = (props) => {
         </HomeStack.Navigator>
     );
 };
-export default HomeStackScreen ;
+export default HomeStackScreen;
