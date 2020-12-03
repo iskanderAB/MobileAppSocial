@@ -10,7 +10,6 @@ import {
     Image,
     Alert
 } from "react-native";
-<<<<<<< HEAD
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 
 import moment from 'moment';
@@ -18,126 +17,54 @@ import moment from 'moment';
 let ip = '192.168.43.207';
 
 const EventDetail = ({route ,navigation}) => {
-=======
-import {Button} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from "axios";
-import {MaterialIcons} from "@expo/vector-icons";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
-import ImageUpload from "../../components/ImagePicker/ImageUpload";
-import { Fontisto } from '@expo/vector-icons';
-import { IconButton, Colors } from 'react-native-paper';
-
-let ip ='192.168.1.5' ;
-
-const EventDetail = ({navigation}) => {
->>>>>>> 2bbfc1205aa935c85ee08d24598c61fa7e94acd2
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
     const [token ,setToken] = useState(null) ;
     const [status, setStatus] = useState();
     const [nomEven, setNomEven] = useState();
-    const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const [image , setImage] = useState(null);
     const [document ,setDocument] = useState(null);
     const [nameOfFile , setNameOfFile] = useState(null);
+    let dt = new Date(date);
 
-    const getData = async ()=> {
-        await AsyncStorage.getItem('token').then(res => {
-            setToken(res);
-        } );
-    }
+    const { image, title, content , date ,allInterested,thisUser } = route.params;
+
     useEffect(()=> {
-        getData();
-    },[])
-
-    useEffect(()=>{
-        console.log(isSelected)
-    },[isSelected]);
-
-
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'Android');
-        setDate(currentDate);
-    };
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
-    const showDatepicker = () => {
-        showMode('date');
-    };
-    const documentPicker = async () =>  {
-        let doc = await DocumentPicker.getDocumentAsync({
-            type: "/"
-        });
-        alert(doc);
-        console.log("docccccc",doc.uri);
-        const  fileString = await FileSystem.readAsStringAsync(doc.uri,{encoding: FileSystem.EncodingType.base64});
-        //console.log('file =>' ,fileString)
-        let info = await FileSystem.getInfoAsync(doc.uri, {size : true})
-
-        console.log( 'info ==> ' ,  info)
-        setDocument("data:application/pdf;base64,"+fileString);
-        setNameOfFile(doc.name);
-    }
-
-
+        console.log('intersteeeeed => ' , allInterested)
+    });
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-
             <Image
                 style={styles.image}
                 source={{
-                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                    uri: image,
                 }}
             />
 
             <View style={styles.container1}>
-
-
                 <View >
                     <Text style={{marginVertical: 10,
                         color: '#606060',
                         fontWeight:'700',
-                        fontSize:23}}> Event name </Text>
-                    <Text style={styles.text}> </Text>
+                        fontSize:23}}> {title} </Text>
 
-                    {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            is24Hour={true}
-                            display="default"
-                            onChange={onChange}
-                        />
-                    )}
+                    <Text style={styles.text}> {moment(date).format('ll')} </Text>
+                    <Text style={styles.text}> {content} </Text>
+                    {allInterested.length > 0 ?  allInterested.map((user,index) => {
+                        if(thisUser !== user.email)
+                            return(<Card style={{ marginTop : 10}}>
+                                        <Card.Title title={user.nom+' '+user.prenom} style={{paddingLeft :3}} key={index} left={()=><Avatar.Image  size={50} source={{uri:`http://${ip}:8001/upload/user/${user.image}`}}/>}/>
+                                    </Card>)
+                    }) :
+                    null}
+
+
                 </View>
-                <Button
-                    title="Left button"
-                    onPress={() => 0}
-                    mode="contained"
-                    color='#50aeff'
-                    loading={loading}
-                    style={styles.button}
-                    labelStyle={styles.label}
-                    contentStyle={{height:60}}
-                    onPress={()=>requestPost()}
-                > Ajouter </Button>
             </View>
-
         </ScrollView>);
 }
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -210,12 +137,7 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 50,
         height: 60,
-<<<<<<< HEAD
         marginBottom: 20
-=======
-        marginBottom: 20,
-        top: -30
->>>>>>> 2bbfc1205aa935c85ee08d24598c61fa7e94acd2
     },
     label : {
         color: 'white'

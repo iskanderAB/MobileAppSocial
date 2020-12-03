@@ -6,9 +6,7 @@ import UpdateProfile from "../UpdateProfile/UpdateProfile";
 import UpdatePost from "../UpdatePost/UpdatePost";
 import Stat from '../Stat/Stat';
 import OffreStage from '../OffreStage/OffreStage';
-
 import EventDetail from '../Event/EventDetail';
-
 
 const HomeStack = createStackNavigator();
 const HomeStackScreen = (props) => {
