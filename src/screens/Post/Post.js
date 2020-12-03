@@ -20,7 +20,7 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
 
-let ip ='192.168.1.36';
+let ip ='192.168.43.207';
 const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -78,14 +78,14 @@ const Post = ({navigation}) => {
             console.log("Response =====> " , response.data);
             setTimeout(()=> navigation.navigate("Home"),500)
             setTimeout(()=>{
-                Alert.alert(`${response.data}`);
+                Alert.alert(`Ajouter avec succée `);
                 setLoading(false)},200);
         }).catch(error => {
             setLoading(false);
             console.log('====================================');
             console.log(error.response);
             console.log('====================================');
-            alert(`${error.response.data}`);
+            alert(`${error}`);
         })
     }
 
@@ -101,20 +101,6 @@ const Post = ({navigation}) => {
     const showDatepicker = () => {
         showMode('date');
     };
-    const documentPicker = async () =>  {
-            let doc = await DocumentPicker.getDocumentAsync({
-                type: "*/*"
-            });
-            alert(doc);
-            console.log("docccccc",doc.uri);
-            const  fileString = await FileSystem.readAsStringAsync(doc.uri,{encoding: FileSystem.EncodingType.base64});
-            //console.log('file =>' ,fileString)
-            let info = await FileSystem.getInfoAsync(doc.uri, {size : true})
-
-            console.log( 'info ==> ' ,  info)
-            setDocument("data:application/pdf;base64,"+fileString);
-            setNameOfFile(doc.name);
-    }
 
     const ifEvent = () => {
         return (
@@ -127,10 +113,8 @@ const Post = ({navigation}) => {
                 borderColor: '#bebcbc',
                 marginBottom: 5,
                 borderRadius: 50,}} selectionColor={'red'}
-                       onChangeText={(text)=> setNomEven(text)}
-            />
+                                    onChangeText={(text)=> setNomEven(text)}/>
              <Text style={styles.text}> Date de l'Evènement </Text>
-
                     <View>
                         <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
                             <Text style={{fontWeight:"700",color: '#606060'}}>{date.getMonth()}/{date.getDate()}/{date.getFullYear()}</Text>

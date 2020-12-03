@@ -12,7 +12,7 @@ import Updater from './updater/Updater';
 import Axios from 'axios';
 
 // let ip = '192.168.43.207';
-let ip ='192.168.1.36';
+let ip ='192.168.43.207';
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -49,7 +49,7 @@ const loginReducer = (prevState, action) => {
 
 const App = () => {
     const [isloading, setIsLoading] = useState(true);
-    const [loginState, dispatch] = useReducer(loginReducer, initialLoginStat)
+    const [loginState, dispatch] = useReducer(loginReducer, initialLoginStat);
 
     const authContext = React.useMemo(() => ({
         signIn: async (username, password, loadingButton) => {
@@ -82,14 +82,15 @@ const App = () => {
             setIsLoading(false);
             dispatch({ Type: 'LOGOUT', userName: null, token: null });
         },
-        userInformation : loginState
+        userInformation : loginState,
     }), []);
     
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
-        }, 1000)
+        }, 1000);
     }, []);
+
 
     const backUpToken= () => { 
         if (loginState.userToken === null)

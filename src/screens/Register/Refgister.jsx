@@ -6,7 +6,7 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 
 
 // let ip = '192.168.43.207';
-let ip ='192.168.1.36' ;
+let ip ='192.168.43.207' ;
 const Register = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");

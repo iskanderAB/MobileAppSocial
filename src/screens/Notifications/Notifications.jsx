@@ -5,7 +5,7 @@ import Post from "../../components/Card/Post";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Axios from "axios";
 
-let ip ='192.168.1.36' ;
+let ip ='192.168.43.207' ;
 
 const Notifications = () => {
 

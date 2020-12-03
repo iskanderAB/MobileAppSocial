@@ -1,43 +1,92 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, Text, View, Pressable, RefreshControl, ActivityIndicator} from "react-native";
+import { StyleSheet, ScrollView, Text, View, Pressable, RefreshControl, ActivityIndicator, Alert } from "react-native";
+import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Axios from 'axios';
 import Post from "../../components/Card/Post";
 import { MaterialIcons } from '@expo/vector-icons';
+import jwt_decode from "jwt-decode";
 
 
-let ip ='192.168.1.36' ;
-const Home = ({ navigation }) => {
+let ip = '192.168.43.207';
+
+
+const Home = ({ navigation ,route }) => {
     const [refreshing, setRefreshing] = useState(true);
-    const [token ,setToken] = useState(null) ;
-    const [posts,setPosts] = useState(null);
+    const [token, setToken] = useState(null);
+    const [posts, setPosts] = useState([]);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        getData(token)
+        alert(token)
+        getData();
     }, []);
-
-    const getData = async (token) => {
-        await AsyncStorage.getItem('token').then(res => {
-            setToken(res);
-        });
+    
+    const getData = async () => {
+        setPosts([]);
+        setRefreshing(true)
         console.log('tooooken => ', token);
         await Axios.get(`http://${ip}:8001/api/posts`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }).then(response => {
-            setPosts(response.data.map(v=>v).reverse());
-            console.log( typeof response.data)
+            setPosts(response.data.map(v => v).reverse());
+            //alert(JSON.stringify(response.data.map(v => v).reverse()))
+            console.log('postes => ' , response.data)
             setRefreshing(false)
         }).catch(error => {
             setRefreshing(false);
-            alert("erreur de connexion ! ");
+            //alert("erreur de connexion ! ");
             console.log("\n", error.response)
         });
     }
+    useEffect(()=> {
+        AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+        });
+    },[]);
+
     useEffect(() => {
-        getData(token)
+        getData();        
     }, [token]);
+
+    const loveRequest = async (id) => {
+        console.log("hello")
+        await Axios.post(`http://${ip}:8001/api/love`, { postId: id }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            console.log("Response =====> ", response.data);
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+    }
+
+    const participateRequest = async (id) => {
+        console.log("hello")
+        await Axios.post(`http://${ip}:8001/api/participate`, { postId: id }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            //alert(`${response.data}`)
+            console.log("Response =====> ", response.data);
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+    }
+    
     console.log(posts);
     console.log(navigation);
     const [notificationBackColor, setNotificationBackColor] = useState('red');
@@ -60,14 +109,15 @@ const Home = ({ navigation }) => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} style={{height:'100%',backgroundColor:'red'}} />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} style={{ height: '100%', backgroundColor: 'red' }} />
                 } >
-                
-                {posts ?
-                     posts.map((post , index) => {
-                       return <Post key={index} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`}  content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } type={post.type} /> })
-                :
-                 refreshing == false  ?  <ActivityIndicator size="large" color='red' style={{justifyContent : 'center' ,alignSelf: 'center'}} /> : null
+            
+            {posts !== [] ?
+                    posts.map((post, index) => {
+                        return <Post key={index}  title={post.title} email={post.createdBy.email} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />
+                    })
+                    :
+                    <Text style={{...styles.text,alignSelf : 'center',justifyContent :'center',color:'gray',marginTop:150}}> Aucune donnée ... </Text>
                 }
             </ScrollView>
         </View>

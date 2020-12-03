@@ -7,8 +7,8 @@ import AuthContext from '../../components/Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-let ip ='192.168.1.36' ;
-const Profile = () => {
+let ip ='192.168.43.207' ;
+const Profile = ({navigation}) => {
     const [image , setImage] = useState();
     const [token ,setToken] = useState(null) ;
     const [name , setName] = useState(null);
@@ -43,6 +43,41 @@ const Profile = () => {
         }).catch(error => console.log("\n",error));
         setRefreshing(false);
     }
+    const loveRequest = async (id) => {
+        await Axios.post(`http://${ip}:8001/api/love`, { postId: id }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            console.log("Response =====> ", response.data);
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+    }
+    const participateRequest = async (id) => {
+        console.log("hello")
+        await Axios.post(`http://${ip}:8001/api/participate`, { postId: id }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            //alert(`${response.data}`)
+            console.log("Response =====> ", response.data);
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+    }
+
     const onRefresh = React.useCallback(() => {
         console.log(token);
         setRefreshing(true);
@@ -73,7 +108,8 @@ const Profile = () => {
             <ScrollView showsVerticalScrollIndicator={false} invertStickyHeaders={true}>
                 {posts ? 
                     posts.filter(post=> post.createdBy.id === id).map((post , index) => {
-                       return <Post key={index} type={post.type} title={post.title} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`}  userFullName={post.createdBy.nom+' '+post.createdBy.prenom  } /> })
+                        return <Post key={index} title={post.title} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />  
+                    })
                 :
                     <ActivityIndicator  size='small'/>
                 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -12,28 +12,29 @@ import {
     Pressable,
     Alert
 } from "react-native";
-import {Button} from 'react-native-paper';
-import axios from "axios";
-import {MaterialIcons} from "@expo/vector-icons";
+import moment from 'moment';
+import { Button } from 'react-native-paper';
+import Axios from 'axios';
+import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
-const UpdatePost = () => {
-    const [isSelected,setSelection] = useState(false);
-    const [loading , setLoading] = useState(false);
-    const [status, setStatus] = useState();
-    const [nomEven, setNomEven] = useState();
-    const [date, setDate] = useState(new Date());
+const UpdatePost = ({ route , navigation}) => {
+    const { UpdateImage, updateTitle, updateContent, updateDate, updateType,id ,token } = route.params;
+    const [isSelected, setSelection] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState(updateContent);
+    const [nomEven, setNomEven] = useState(updateTitle);
+    const [date, setDate] = useState(moment(updateDate).format('ll'));
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const [image,setImage] = useState(null);
-
-    let ip ='192.168.1.36' ;
+    const [image, setImage] = useState(null);
+    let ip = '192.168.43.207';
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
+        // const currentDate = selectedDate || date;
         setShow(Platform.OS === 'Android');
-        setDate(currentDate);
+        setDate(moment(selectedDate).format('ll'));
     };
 
     const showMode = (currentMode) => {
@@ -44,26 +45,75 @@ const UpdatePost = () => {
     const showDatepicker = () => {
         showMode('date');
     };
+    const update = async () => { 
+        let data = updateType === 'event' ? {
+            date : date ,
+            content :  status,
+            title : nomEven
+
+        } :
+        {
+            content :  status,
+        }
+        await Axios.put(`http://${ip}:8001/api/post/${id}`, data , {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            console.log("Response =====> ", response.data);
+            alert(" success ");
+            navigation.navigate('HomePage');
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+    }
+    const deleteRequest = async () => { 
+        await Axios.delete(`http://${ip}:8001/api/post/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            // handle success
+            console.log("Response =====> ", response.data);
+            alert(" deleted ")
+            navigation.navigate('HomePage');
+        }).catch(error => {
+            console.log('====================================');
+            console.log(error.response);
+            console.log('====================================');
+            alert(`${error}`);
+        });
+        
+        
+    }
 
     const ifEvent = () => {
         return (
-            <View style={{flex:1 }}>
+            <View style={{ flex: 1 }}>
                 <Text style={styles.text}> Nom de l'Evènement </Text>
-                <TextInput placeholder={'Nom de l\'Evènement'} style={{height: 50,
+                <TextInput placeholder={'Nom de l\'Evènement'} style={{
+                    height: 50,
                     width: '100%',
                     borderWidth: 1,
                     padding: 15,
                     borderColor: '#bebcbc',
                     marginBottom: 5,
-                    borderRadius: 50,}} selectionColor={'red'}
-                           onChangeText={(text)=> setNomEven(text)}
+                    borderRadius: 50,
+                }} selectionColor={'red'}
+                    onChangeText={(text) => setNomEven(text)}
                 />
 
                 <Text style={styles.text}> Date de l'Evènement </Text>
 
                 <View>
                     <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
-                        <Text style={{fontWeight:"700",color: '#606060'}}>{date.getMonth()}/{date.getDate()}/{date.getFullYear()}</Text>
+                        <Text style={{ fontWeight: "700", color: '#606060' }}>{date}</Text>
                         <Fontisto name="date" size={24} color="black" />
                     </TouchableOpacity>
                     <Text style={styles.text}> </Text>
@@ -81,8 +131,6 @@ const UpdatePost = () => {
             </View>
         )
     }
-
-
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
             {/* <View style={styles.header}>
@@ -95,32 +143,62 @@ const UpdatePost = () => {
             <View style={styles.container1}>
                 <View style={styles.inputContainer} >
                     <TextInput
-                        style={{textAlignVertical: 'top'}}
+                        style={{ textAlignVertical: 'top' }}
                         value={status}
                         placeholderTextColor="grey"
                         numberOfLines={10}
                         multiline={true}
-                        onChangeText={(text)=> setStatus(text)}
+                        onChangeText={(text) => setStatus(text)}
                     />
                 </View>
-
-                <ImageUpload setImage={setImage} image={image}/>
-
-                <View style={{ flexDirection:'row',justifyContent: 'space-between'}}>
-                    <Text style={{marginVertical: 10,
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{
+                        marginVertical: 10,
                         color: '#606060',
-                        fontWeight:'700'}}> Evènement </Text>
-                    <CheckBox
-                        value={isSelected}
-                        onValueChange={setSelection}
-                        tintColors={{ true: '#2472e2' }}
-                    />
+                        fontWeight: '700'
+                    }}> Evènement </Text>
+
                 </View>
 
                 {
-                    isSelected ? ifEvent() :  null
-                }
+                    updateType === "event" ?
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.text}> Nom de l'Evènement </Text>
+                            <TextInput style={{
+                                height: 50,
+                                width: '100%',
+                                borderWidth: 1,
+                                padding: 15,
+                                borderColor: '#bebcbc',
+                                marginBottom: 5,
+                                borderRadius: 50,
+                            }} selectionColor={'red'}
+                                onChangeText={(text) => setNomEven(text)}
+                                value={nomEven}
+                            />
+                            <Text style={styles.text}> Date de l'Evènement </Text>
 
+                            <View>
+                                <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
+                                    <Text style={{ fontWeight: "700", color: '#606060' }}>{date}</Text>
+                                    <Fontisto name="date" size={24} color="black" />
+                                </TouchableOpacity>
+                                <Text style={styles.text}> </Text>
+                            </View>
+                            {show && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={new Date(date)}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    display="default"
+                                    onChange={onChange}
+                                />
+                            )}
+                        </View>
+                        :
+                        null
+                }
                 <Button
                     title="Left button"
                     onPress={() => 0}
@@ -129,19 +207,18 @@ const UpdatePost = () => {
                     loading={loading}
                     style={styles.button}
                     labelStyle={styles.label}
-                    contentStyle={{height:60}}
-                    onPress={()=>updatePost()}
-                > Ajouter </Button>
+                    contentStyle={{ height: 60 }}
+                    onPress={() => update()}
+                > Confirmer </Button>
                 <Button
                     title="Left button"
-                    onPress={() => 0}
+                    onPress={deleteRequest}
                     mode="contained"
                     color='#dc3545'
                     loading={loading}
                     style={styles.button}
                     labelStyle={styles.label}
-                    contentStyle={{height:60}}
-                    onPress={()=>deletePost()}
+                    contentStyle={{ height: 60 }}
                 > Supprimer la status </Button>
             </View>
 
@@ -170,7 +247,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    inputContainer  : {
+    inputContainer: {
         height: 150,
         width: '100%',
         borderWidth: 1,
@@ -180,8 +257,8 @@ const styles = StyleSheet.create({
         marginVertical: 10,
 
     },
-    dateBut : {
-        flexDirection:'row',
+    dateBut: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: "center",
         padding: 15,
@@ -191,7 +268,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     input: {
-        height:400,
+        height: 400,
         width: '100%',
         borderWidth: 1,
         padding: 15,
@@ -208,10 +285,10 @@ const styles = StyleSheet.create({
         height: 60,
         marginBottom: 20,
     },
-    label : {
+    label: {
         color: 'white'
     },
-    textBottom : {
+    textBottom: {
         flex: 1,
         justifyContent: 'center'
     }
