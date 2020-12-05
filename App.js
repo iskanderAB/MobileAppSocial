@@ -1,10 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useReducer,useRef } from 'react';
-import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Alert,Platform } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+import { View, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import RootStackScreen from './src/screens/Root/Root';
@@ -13,6 +10,20 @@ import AuthContext from './src/components/Context/AuthContext'
 import AppScreen from './src/screens/AppScreen/AppScreen';
 import Updater from './updater/Updater';
 import Axios from 'axios';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import { Platform } from 'react-native';
+
+
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
 
 // let ip = '192.168.43.207';
 let ip ='192.168.43.207';
@@ -58,6 +69,26 @@ const App = () => {
     const notificationListener = useRef();
     const responseListener = useRef();
 
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    
+        // This listener is fired whenever a notification is received while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+          setNotification(notification);
+        });
+    
+        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log(response);
+        });
+    
+        return () => {
+          Notifications.removeNotificationSubscription(notificationListener);
+          Notifications.removeNotificationSubscription(responseListener);
+        };
+      }, []);
+
     const authContext = React.useMemo(() => ({
         signIn: async (username, password, loadingButton) => {
             await Axios.post(`http://${ip}:8001/api/login_check`, {
@@ -92,29 +123,19 @@ const App = () => {
         userInformation : loginState,
     }), []);
     
+
+    useEffect(() =>{
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    },[])
+
+
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
         }, 1000);
     }, []);
 
-    useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-          setNotification(notification);
-        });
-    
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-          console.log(response);
-        });
-    
-        return () => {
-          Notifications.removeNotificationSubscription(notificationListener);
-          Notifications.removeNotificationSubscription(responseListener);
-        };
-      }, []);
-
+   
     const backUpToken= () => { 
         if (loginState.userToken === null)
         setTimeout(async () => {
@@ -132,6 +153,7 @@ const App = () => {
     useEffect(() => {
         backUpToken();
     }, []);
+    
 
     if (isloading) {
         return (
@@ -154,18 +176,27 @@ const App = () => {
     );
 };
 
-async function schedulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "You've got mail! 📬",
-        body: 'Here is the notification body',
-        data: { data: 'goes here' },
+async function sendPushNotification(expoPushToken) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Original Title',
+      body: 'And here is the body!',
+      data: { data: 'goes here' },
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
       },
-      trigger: { seconds: 2 },
+      body: JSON.stringify(message),
     });
   }
-
-async function registerForPushNotificationsAsync() {
+  
+  async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
       const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
@@ -179,7 +210,7 @@ async function registerForPushNotificationsAsync() {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log('notiff ' ,token);
+      console.log(token);
     } else {
       alert('Must use physical device for Push Notifications');
     }
@@ -192,6 +223,8 @@ async function registerForPushNotificationsAsync() {
         lightColor: '#FF231F7C',
       });
     }
+  
     return token;
   }
+
 export default App; 
