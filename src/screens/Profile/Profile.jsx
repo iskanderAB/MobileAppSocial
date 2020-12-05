@@ -22,6 +22,7 @@ const Profile = ({navigation}) => {
             setToken(res);
         } );
         console.log('tooooken => ' , token);
+        //alert(token)
         await Axios.get(`http://${ip}:8001/api/user`,{
             headers : {
                 Authorization: `Bearer ${token}`

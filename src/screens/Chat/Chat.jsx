@@ -29,7 +29,8 @@ const db = firebase.firestore();
 const chatsRef = db.collection('chats');
 
 const Chat = () =>  {
-    const [user, setUser] = useState(null);
+    // id for user 
+    const [user, setUser] = useState(3);
     const [name, setName] = useState('');
     const [messages, setMessages] = useState([])
 

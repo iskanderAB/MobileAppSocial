@@ -17,7 +17,7 @@ const Home = ({ navigation ,route }) => {
     const [posts, setPosts] = useState([]);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        alert(token)
+        //alert(token)
         getData();
     }, []);
     
@@ -43,6 +43,7 @@ const Home = ({ navigation ,route }) => {
     useEffect(()=> {
         AsyncStorage.getItem('token').then(res => {
             setToken(res);
+            
         });
     },[]);
 
@@ -51,7 +52,7 @@ const Home = ({ navigation ,route }) => {
     }, [token]);
 
     const loveRequest = async (id) => {
-        console.log("hello")
+        console.log("Request !! ")
         await Axios.post(`http://${ip}:8001/api/love`, { postId: id }, {
             headers: {
                 "Content-Type": "application/json",
