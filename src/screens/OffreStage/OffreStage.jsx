@@ -19,7 +19,7 @@ import * as FileSystem from 'expo-file-system';
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
-let ip ='192.168.1.5' ;
+let ip ='192.168.1.12' ;
 
 const offreStage = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);

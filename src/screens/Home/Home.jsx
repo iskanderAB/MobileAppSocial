@@ -8,7 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import jwt_decode from "jwt-decode";
 
 
-let ip = '192.168.43.207';
+let ip = '192.168.1.12';
 
 
 const Home = ({ navigation ,route }) => {
@@ -20,11 +20,10 @@ const Home = ({ navigation ,route }) => {
         //alert(token)
         getData();
     }, []);
-    
     const getData = async () => {
-        setPosts([]);
+        alert(posts)
         setRefreshing(true)
-        console.log('tooooken => ', token);
+        //console.log('tooooken => ', token);
         await Axios.get(`http://${ip}:8001/api/posts`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -32,12 +31,12 @@ const Home = ({ navigation ,route }) => {
         }).then(response => {
             setPosts(response.data.map(v => v).reverse());
             //alert(JSON.stringify(response.data.map(v => v).reverse()))
-            console.log('postes => ' , response.data)
+            //console.log('postes => ' , response.data)
             setRefreshing(false)
         }).catch(error => {
             setRefreshing(false);
-            //alert("erreur de connexion ! ");
-            console.log("\n", error.response)
+            alert("erreur de connexion ! ");
+            //console.log("\n", error.response)
         });
     }
     useEffect(()=> {
@@ -52,7 +51,7 @@ const Home = ({ navigation ,route }) => {
     }, [token]);
 
     const loveRequest = async (id) => {
-        console.log("Request !! ")
+        //console.log("Request !! ")
         await Axios.post(`http://${ip}:8001/api/love`, { postId: id }, {
             headers: {
                 "Content-Type": "application/json",
@@ -60,17 +59,17 @@ const Home = ({ navigation ,route }) => {
             }
         }).then(response => {
             // handle success
-            console.log("Response =====> ", response.data);
+            //console.log("Response =====> ", response.data);
         }).catch(error => {
-            console.log('====================================');
-            console.log(error.response);
-            console.log('====================================');
+            //console.log('====================================');
+            //console.log(error.response);
+            //console.log('====================================');
             alert(`${error}`);
         });
     }
 
     const participateRequest = async (id) => {
-        console.log("hello")
+        //console.log("hello")
         await Axios.post(`http://${ip}:8001/api/participate`, { postId: id }, {
             headers: {
                 "Content-Type": "application/json",
@@ -79,17 +78,17 @@ const Home = ({ navigation ,route }) => {
         }).then(response => {
             // handle success
             //alert(`${response.data}`)
-            console.log("Response =====> ", response.data);
+            //console.log("Response =====> ", response.data);
         }).catch(error => {
-            console.log('====================================');
-            console.log(error.response);
-            console.log('====================================');
+            //console.log('====================================');
+            //console.log(error.response);
+            //console.log('====================================');
             alert(`${error}`);
         });
     }
     
-    console.log(posts);
-    console.log(navigation);
+    // console.log(posts);
+    // console.log(navigation);
     const [notificationBackColor, setNotificationBackColor] = useState('red');
     return (
         <View style={styles.container}>

@@ -15,18 +15,16 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import { Platform } from 'react-native';
 
-
-
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
-      shouldPlaySound: false,
+      shouldPlaySound: true,
       shouldSetBadge: false,
     }),
   });
 
 // let ip = '192.168.43.207';
-let ip ='192.168.43.207';
+let ip ='192.168.1.12';
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -39,10 +37,11 @@ const getData = async (key) => {
     try {
         const value = await AsyncStorage.getItem(key)
         if (value !== null) {
+            
             return value;
         }
     } catch (e) {
-        console.log('[App.js]', error)
+        
         return null;
     }
 }
@@ -61,6 +60,7 @@ const loginReducer = (prevState, action) => {
     }
 }
 
+
 const App = () => {
     const [isloading, setIsLoading] = useState(true);
     const [loginState, dispatch] = useReducer(loginReducer, initialLoginStat);
@@ -68,21 +68,33 @@ const App = () => {
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
-
-
+    async function setToken(tokenNotification) {
+        await Axios.post(` http://${ip}:8001/api/setTokenNotification`,{
+            "tokenNotification" : tokenNotification
+        },{
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${loginState.userToken}`
+            }
+        }).then(response => {
+            //console.log('token notification success ')
+        }).catch(error => { 
+            //console.log('error ' , error);
+        });
+    }
+    
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
           setNotification(notification);
+          console.log('redddd')
         });
     
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-          console.log(response);
+          //console.log('iskander Response => ' ,response);
         });
-    
         return () => {
           Notifications.removeNotificationSubscription(notificationListener);
           Notifications.removeNotificationSubscription(responseListener);
@@ -101,14 +113,14 @@ const App = () => {
                     alert('problem loacal storage');
                 }
                 dispatch({ Type: 'LOGIN', userName: username, token: response.data.token });
-                getData('token').then(res => console.log('token', res));
+                getData('token');
             }).catch(error => {
-                console.log(error)
+                //console.log(error)
                 Alert.alert(
                     "Connexion Error ",
                     error.message,
                     [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                        { text: "OK", onPress: () => 0 /*console.log("OK Pressed")*/ }
                     ],
                     { cancelable: true }
                 );
@@ -123,11 +135,11 @@ const App = () => {
         userInformation : loginState,
     }), []);
     
-
-    useEffect(() =>{
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    },[])
-
+    useEffect(()=> {
+        if(expoPushToken !== ''){
+            setToken(expoPushToken)
+        }
+    },[expoPushToken]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -176,25 +188,25 @@ const App = () => {
     );
 };
 
-async function sendPushNotification(expoPushToken) {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'Original Title',
-      body: 'And here is the body!',
-      data: { data: 'goes here' },
-    };
+// async function sendPushNotification(expoPushToken) {
+//     const message = {
+//       to: expoPushToken,
+//       sound: 'default',
+//       title: 'Original Title',
+//       body: 'And here is the body!',
+//       data: { data: 'goes here' },
+//     };
   
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-  }
+//     await fetch('https://exp.host/--/api/v2/push/send', {
+//       method: 'POST',
+//       headers: {
+//         Accept: 'application/json',
+//         'Accept-encoding': 'gzip, deflate',
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(message),
+//     });
+//   }
   
   async function registerForPushNotificationsAsync() {
     let token;
@@ -210,7 +222,7 @@ async function sendPushNotification(expoPushToken) {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
+      //console.log(token);
     } else {
       alert('Must use physical device for Push Notifications');
     }

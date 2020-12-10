@@ -14,7 +14,7 @@ import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 
 import moment from 'moment';
 
-let ip = '192.168.43.207';
+let ip = '192.168.1.12';
 
 const EventDetail = ({route ,navigation}) => {
     const [isSelected,setSelection] = useState(false);

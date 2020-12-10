@@ -20,7 +20,7 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
 
-let ip ='192.168.43.207';
+let ip ='192.168.1.12';
 const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -43,9 +43,7 @@ const Post = ({navigation}) => {
         getData();
     },[])
 
-    useEffect(()=>{
-        console.log(isSelected)
-    },[isSelected]);
+
 
     function requestPost() {
         // // alert(`Donayla test  ${email}`);
@@ -58,16 +56,15 @@ const Post = ({navigation}) => {
             image : image ?  image.base64 : null ,
             date : date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear(),
             title : nomEven,
-            document : document
         }:
         {
             content : status ,
             type : 'post',
             image :  image ?  image.base64 : null,
-            document : document
         };
-        console.log('[data]', data.type);
+        //console.log('[data]', data.type);
         setLoading(true);
+        //console.log(data);
         axios.post(`http://${ip}:8001/api/addPost`,data,{
             headers:{
                 "Content-Type" : "application/json",
@@ -75,16 +72,16 @@ const Post = ({navigation}) => {
             }
         }).then(function (response) {
             // handle success
-            console.log("Response =====> " , response.data);
+            //console.log("Response =====> " , response.data);
             setTimeout(()=> navigation.navigate("Home"),500)
             setTimeout(()=>{
                 Alert.alert(`Ajouter avec succée `);
                 setLoading(false)},200);
         }).catch(error => {
             setLoading(false);
-            console.log('====================================');
-            console.log(error.response);
-            console.log('====================================');
+            // console.log('====================================');
+            // console.log(error.response);
+            // console.log('====================================');
             alert(`${error}`);
         })
     }

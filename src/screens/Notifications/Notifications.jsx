@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, ScrollView, Text, View, RefreshControl} from "react-native";
+import {StyleSheet, ScrollView, Text,Switch, View, RefreshControl} from "react-native";
 import Notification from "../../components/Notification/Notifcation";
 import Post from "../../components/Card/Post";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Axios from "axios";
 
-let ip ='192.168.43.207' ;
+let ip ='192.168.1.12' ;
 
 const Notifications = () => {
-
     const [refreshing, setRefreshing] = useState(true);
     const [token ,setToken] = useState(null) ;
     const [posts,setPosts] = useState(null);
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = async () => setIsEnabled(previousState => !previousState);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -43,6 +44,13 @@ const Notifications = () => {
         <View  style={styles.container} >
             <View style={styles.header}>
                 <Text style={styles.text}> Notifications </Text>
+                <Switch
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                    thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                />
             </View>
             <View style={{flexDirection: 'row',alignItems: 'center'}} >
                 <Text style={{color:"#d6d6d6",fontWeight: 'bold'}}> Derniers Notifications</Text>

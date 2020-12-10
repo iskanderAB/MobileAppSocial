@@ -5,7 +5,7 @@ import axios from "axios";
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
 
 
-let ip = '192.168.1.36';
+let ip = '192.168.1.12';
 const updateProfile = ({navigation}) => {
     const [nom,setNom] = useState("");
     const [prenom,setPrenom] = useState("");
