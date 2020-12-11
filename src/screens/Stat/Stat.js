@@ -6,7 +6,7 @@ import Axios from "axios";
 
 let ip ='192.168.1.12' ;
 
-const Stat = () => {
+const Stat = ({navigation}) => {
     const [NMR,setNMR] = useState(0);
     const [duree,setDuree] = useState(0);
     const [diplome,setDiplome] = useState("2020");
@@ -26,9 +26,9 @@ const Stat = () => {
     },[]);
     const pushData=()=>{
         let data ={
-            "NMR" : NMR , 
+            "NMR" :+NMR , 
             "year_recruitment":diplome,
-            "duree":duree,
+            "duree":+duree,
             "poste" :poste,
             "company" : company,
             "companySkills" :companySkills,
@@ -36,23 +36,25 @@ const Stat = () => {
         }
         console.log('data ==> ' , data);
         setLoading(true);
-        // Axios.post(`http://${ip}:8001/api/stat`,data,{
-        //     headers:{
-        //         "Content-Type" : "application/json",
-        //         Authorization: `Bearer ${token}`
-        //     }
-        // }).then(response=> {
-        //     alert("ajouté avec succès");
-        //     setLoading(false);
-        // }).catch(error => {
-        //     setLoading(false)
-        //     alert(error)});
+        Axios.post(`http://${ip}:8001/api/stat`,data,{
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response=> {
+            alert("ajouté avec succès");
+            setLoading(false);
+            setTimeout(()=> navigation.navigate('HomePage') ,1000)
+        }).catch(error => {
+            setLoading(false)
+            console.log(error.response)});
     };
-    return (<ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+    return (
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Text style={{fontSize : 23, fontWeight : '600',marginVertical: 10 , top : 5}}> La premiere Embauche </Text>
         <Text style={styles.text}> Nombre de mois de recherche </Text>
         <TextInput placeholder={'Nombre de mois'} style={styles.input} keyboardType={'numeric'} selectionColor={'red'}
-                   onChangeText={(nbr)=> setNMR(nbr)}
+                   onChangeText={(nbr)=> setNMR (nbr)}
         />
         <View style={{flex:1, flexDirection:'row',alignItems : 'center'}}>
             <Text style={styles.text}> Année de recrutement </Text>
@@ -75,37 +77,37 @@ const Stat = () => {
 
         <Text style={styles.text}> Durée par mois </Text>
         <TextInput placeholder={'Nombre de mois'} style={styles.input} keyboardType={'numeric'} selectionColor={'red'}
-                   onChange={(nbr)=> setDuree(nbr)}
+                   onChangeText={(nbr)=> setDuree(nbr)}
         />
         <Text style={styles.text}> Poste </Text>
         <TextInput placeholder={'Poste'} style={styles.input} selectionColor={'red'}
-                   onChange={(text)=> setPoste(text)}
+                   onChangeText={(text)=> setPoste(text)}
         />
         <Text style={styles.text}> Entreprise </Text>
         <TextInput placeholder={'Entreprise'} style={styles.input} selectionColor={'red'}
-                   onChange={(text)=> setCompany(text)}
+                   onChangeText={(text)=> setCompany(text)}
         />
         <Text style={styles.text}> Compétences qui vous ont étés utiles à l'embauche </Text>
         <Picker
-            selectedValue={diplome}
+            selectedValue={companySkills}
             style={{height: 50, width: '100%' }}
             onValueChange={(itemValue, itemIndex) => setCompanySkills(itemValue)}
         >
-            <Picker.Item label="Réseaux radio-mobile" value="0"  color=""/>
-            <Picker.Item label="Réseau VPN" value="1" />
-            <Picker.Item label="Certification CISCO" value="2" />
-            <Picker.Item label="Platforme de services dans les réseaux" value="3" />
+            <Picker.Item label="Réseaux radio-mobile" value="Réseaux radio-mobile"  color=""/>
+            <Picker.Item label="Réseau VPN" value="Réseau VPN" />
+            <Picker.Item label="Certification CISCO" value="Certification CISCO" />
+            <Picker.Item label="Platforme de services dans les réseaux" value="Platforme de services dans les réseaux" />
         </Picker>
         <Text style={styles.text}> Compétences acquises </Text>
         <Picker
-            selectedValue={diplome}
+            selectedValue={yourSkills}
             style={{height: 50, width: '100%'}}
             onValueChange={(itemValue, itemIndex) => setYourSkills(itemValue)}
         >
-            <Picker.Item label="Réseaux radio-mobile" value="0"  color=""/>
-            <Picker.Item label="Sécurité" value="1" />
-            <Picker.Item label="IOT" value="2" />
-            <Picker.Item label="Administration d'entreprises Réseaux " value="3" />
+            <Picker.Item label="Réseaux radio-mobile" value="Réseaux radio-mobile"  color=""/>
+            <Picker.Item label="Sécurité" value="Sécurité" />
+            <Picker.Item label="IOT" value="IOT" />
+            <Picker.Item label="Administration d'entreprises Réseaux" value="Administration d'entreprises Réseaux" />
         </Picker>
         <Button
             title="Left button"
@@ -117,10 +119,9 @@ const Stat = () => {
             labelStyle={styles.label}
             contentStyle={{height:60}}
         > Envoyer </Button>
-    </ScrollView>);
+    </ScrollView>
+    );
 }
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -154,6 +155,6 @@ const styles = StyleSheet.create({
     textBottom : {
         flex: 1,
         justifyContent: 'center'
-    }
+    }0
 });
 export default Stat;
