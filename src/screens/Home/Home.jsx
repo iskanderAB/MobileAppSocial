@@ -7,9 +7,7 @@ import Post from "../../components/Card/Post";
 import { MaterialIcons } from '@expo/vector-icons';
 import jwt_decode from "jwt-decode";
 
-
 let ip = '192.168.43.207';
-
 
 const Home = ({ navigation ,route}) => {
     const [refreshing, setRefreshing] = useState(true);
@@ -21,9 +19,6 @@ const Home = ({ navigation ,route}) => {
         getData();
     }, []);
     const getData = async () => {
-        await AsyncStorage.getItem('token').then(res => {
-                setToken(res);
-            });
         setRefreshing(true)
         console.log('tooooken => ', token);
         setPosts([]);
@@ -43,10 +38,19 @@ const Home = ({ navigation ,route}) => {
         });
     }
 
+    useEffect(()=> { 
+        AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+            console.log(token)
+        }).catch(error => { 
+            alert(JSON.stringify(error))
+        });
+    })
     useEffect(() => {
-        getData();        
-    }, []);
-
+        if(token !== null ){
+            getData();    
+        }    
+    }, [token]);
     const loveRequest = async (id) => {
         //console.log("Request !! ")
         await Axios.post(`http://${ip}:8001/api/love`, { postId: id }, {

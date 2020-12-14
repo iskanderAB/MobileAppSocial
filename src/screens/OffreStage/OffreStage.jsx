@@ -105,6 +105,7 @@ const offreStage = ({navigation}) => {
                        placeholderTextColor="grey"
                        numberOfLines={10}
                        multiline={true}
+                       value={sujet}
                        onChangeText={(text)=> setSujet(text)}
                 />
         </View>
