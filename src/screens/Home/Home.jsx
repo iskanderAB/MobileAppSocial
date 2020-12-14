@@ -8,10 +8,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import jwt_decode from "jwt-decode";
 
 
-let ip = '192.168.1.12';
+let ip = '192.168.43.207';
 
 
-const Home = ({ navigation ,route }) => {
+const Home = ({ navigation ,route}) => {
     const [refreshing, setRefreshing] = useState(true);
     const [token, setToken] = useState(null);
     const [posts, setPosts] = useState([]);
@@ -21,30 +21,29 @@ const Home = ({ navigation ,route }) => {
         getData();
     }, []);
     const getData = async () => {
-        alert(posts)
+        if(token === null ){
+            await AsyncStorage.getItem('token').then(res => {
+                setToken(res);
+            });
+        }
         setRefreshing(true)
-        //console.log('tooooken => ', token);
+        console.log('tooooken => ', token);
+        setPosts([]);
         await Axios.get(`http://${ip}:8001/api/posts`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }).then(response => {
             setPosts(response.data.map(v => v).reverse());
-            //alert(JSON.stringify(response.data.map(v => v).reverse()))
-            //console.log('postes => ' , response.data)
+            //alert(JSON.stringify(posts))
+            console.log('postes => ' , response.data)
             setRefreshing(false)
         }).catch(error => {
-            setRefreshing(false);
-            alert("erreur de connexion ! ");
+            //setRefreshing(false);
+            //alert("erreur de connexion ! ");
             //console.log("\n", error.response)
         });
     }
-    useEffect(()=> {
-        AsyncStorage.getItem('token').then(res => {
-            setToken(res);
-            
-        });
-    },[]);
 
     useEffect(() => {
         getData();        
@@ -62,9 +61,8 @@ const Home = ({ navigation ,route }) => {
             //console.log("Response =====> ", response.data);
         }).catch(error => {
             //console.log('====================================');
-            //console.log(error.response);
+            console.log(error.response);
             //console.log('====================================');
-            alert(`${error}`);
         });
     }
 
@@ -89,7 +87,7 @@ const Home = ({ navigation ,route }) => {
     
     // console.log(posts);
     // console.log(navigation);
-    const [notificationBackColor, setNotificationBackColor] = useState('red');
+    
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -114,7 +112,7 @@ const Home = ({ navigation ,route }) => {
             
             {posts !== [] ?
                     posts.map((post, index) => {
-                        return <Post key={index}  title={post.title} email={post.createdBy.email} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />
+                        return <Post key={index} createdAt={post.createdAt} title={post.title} email={post.createdBy.email} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />
                     })
                     :
                     <Text style={{...styles.text,alignSelf : 'center',justifyContent :'center',color:'gray',marginTop:150}}> Aucune donnée ... </Text>

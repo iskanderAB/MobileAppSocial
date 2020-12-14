@@ -20,7 +20,7 @@ import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
 
-let ip ='192.168.1.12';
+let ip ='192.168.43.207';
 const Post = ({navigation}) => {
     const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
@@ -42,8 +42,6 @@ const Post = ({navigation}) => {
     useEffect(()=> {
         getData();
     },[])
-
-
 
     function requestPost() {
         // // alert(`Donayla test  ${email}`);

@@ -4,8 +4,9 @@ import {StyleSheet , Text,TouchableOpacity ,ActivityIndicator} from "react-nativ
 import { IconButton, Colors } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons'; 
 import jwt_decode from "jwt-decode";
+import moment from 'moment';
 
-const Post = ({navigation,avatar,allInterested, email,userFullName , content ,postImage ,type ,title,id,loveRequest,loved,token , participateRequest ,interested,date}) => {
+const Post = ({navigation,avatar,allInterested, email,userFullName , content ,postImage , createdAt ,type ,title,id,loveRequest,loved,token , participateRequest ,interested,date}) => {
     const [love , setLove] = useState(loved.includes(jwt_decode(token).username));
     const [participate , setParticipate] = useState(interested.includes(jwt_decode(token).username));
     const [lovers , setLovers]= useState(loved.length); 
@@ -40,7 +41,7 @@ const Post = ({navigation,avatar,allInterested, email,userFullName , content ,po
             thisUser : jwt_decode(token).username,
 
         }) : null  } >
-            <Card.Title title={userFullName} style={{paddingLeft :3}} subtitle="Il ya 2 heurs " left={LeftContent} right={()=> email === jwt_decode(token).username ?  <AntDesign name="edit" style={{marginRight : 10 }} 
+            <Card.Title title={userFullName} style={{paddingLeft :3}} subtitle={moment(createdAt).format('ll')} left={LeftContent} right={()=> email === jwt_decode(token).username ?  <AntDesign name="edit" style={{marginRight : 10 }} 
             onPress={
             ()=> navigation.navigate("UpdatePost",{
             updateImage : postImage,

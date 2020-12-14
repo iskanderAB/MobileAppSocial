@@ -24,7 +24,7 @@ Notifications.setNotificationHandler({
   });
 
 // let ip = '192.168.43.207';
-let ip ='192.168.1.12';
+let ip ='192.168.43.207';
 const MainStack = createStackNavigator();
 
 const initialLoginStat = {
@@ -179,7 +179,7 @@ const App = () => {
             <NavigationContainer>
                 {loginState.userToken == null
                     ?
-                    <RootStackScreen/>
+                    <RootStackScreen />
                     :
                     <AppScreen/>
                 }

@@ -23,11 +23,11 @@ const ImageUpload = ({setImage,image}) => {
       quality: 1,
       base64:true,
     });
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
       setImage(result);
-      console.log('[imageUpload]' , typeof result.base64)
+      //console.log('[imageUpload]' , typeof result.base64)
     }
   };
 

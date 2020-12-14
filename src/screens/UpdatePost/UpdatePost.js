@@ -29,7 +29,7 @@ const UpdatePost = ({ route , navigation}) => {
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [image, setImage] = useState(null);
-    let ip = '192.168.1.12';
+    let ip = '192.168.43.207';
 
     const onChange = (event, selectedDate) => {
         // const currentDate = selectedDate || date;

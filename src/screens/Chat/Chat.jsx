@@ -3,8 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import React , {useState, useEffect, useCallback} from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import AsyncStorage from '@react-native-community/async-storage';
-import {StyleSheet, Text, TextInput, View, LogBox, Button, FlatList} from 'react-native';
+import {StyleSheet, Text, TextInput, View, LogBox, Button, FlatList, ActivityIndicator} from 'react-native';
 import * as firebase from 'firebase';
+import Axios from 'axios';
 import 'firebase/firestore'
 
 const firebaseConfig = {
@@ -27,38 +28,62 @@ LogBox.ignoreLogs(['Setting a timer']);
 const db = firebase.firestore();
 
 const chatsRef = db.collection('chats');
-
+let ip ='192.168.43.207' ;
 const Chat = () =>  {
-    // id for user 
-    const [user, setUser] = useState(3);
-    const [name, setName] = useState('');
-    const [messages, setMessages] = useState([])
+    const [user, setUser] = useState(null);
+    const [name, setName] = useState('iskander');
+    const [messages, setMessages] = useState([]);
+    const [token ,setToken] = useState(null) ;
 
+
+    const getData = async ()=> {
+        await AsyncStorage.getItem('token').then(res => {
+            setToken(res);
+        } );
+        console.log('tooooken => ' , token);
+        await Axios.get(`http://${ip}:8001/api/user`,{
+            headers : {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response=> {
+           const user = {_id:response.data.id, name:response.data.nom}
+           setUser(user);
+           console.log('userrrr' , user);
+        }).catch(error => {
+            console.log(error)
+        });
+
+    }
     useEffect(() => {
-        readUser();
+        getData();
         const unsubscribe = chatsRef.onSnapshot(querySnapshot => {
             const messagesFirestore = querySnapshot.docChanges()
                 .filter(({type}) => type === 'added')
                 .map(({doc}) => {
-                    const message  = doc.data()
+                    const message  = doc.data();
+                    console.log( 'message' , message);
                     return {...message, createdAt: message.createdAt.toDate() }
                 })
                 .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
             appendMessages(messagesFirestore)
         })
         return () => unsubscribe()
-    },[]);
+    },[token]);
 
     const appendMessages = useCallback((messages) => {
         setMessages((previousMessages) => GiftedChat.append(previousMessages, messages))
     }, [messages])
 
-    async function readUser() {
-        const user = await AsyncStorage.getItem('user');
-        if (user) {
-            setUser(JSON.parse(user))
-        }
-    }
+    // async function readUser() {
+    //     const _id = Math.random().toString(36).substring(7)
+    //     const user = {_id, name}
+    //     // await AsyncStorage.setItem('user', JSON.stringify(user));
+    //     // const user = await AsyncStorage.getItem('user');
+    //     if (user) {
+    //         setUser(user)
+    //     }
+    //     alert(JSON.stringify(user))
+    // }
 
     async function handlePress() {
         const _id = Math.random().toString(36).substring(7)
@@ -83,7 +108,14 @@ const Chat = () =>  {
             <View style={styles.header}>
                 <Text style={{fontWeight:'bold',fontSize:30,marginBottom :10}}> Chat </Text>
             </View>
-         <GiftedChat messages={messages} user={user} onSend={handleSend} />
+         {user !== null ?
+             <GiftedChat messages={messages} user={user} onSend={handleSend} /> 
+             : 
+             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size='large' color='#87ceeb' />
+            </View>
+             }   
+         
         </View>
         //  <UsersScreen messages={messages}/>
     );

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 import Axios from "axios";
 
-let ip ='192.168.1.12' ;
+let ip ='192.168.43.207' ;
 
 const Stat = ({navigation}) => {
     const [NMR,setNMR] = useState(0);
@@ -155,6 +155,6 @@ const styles = StyleSheet.create({
     textBottom : {
         flex: 1,
         justifyContent: 'center'
-    }0
+    }
 });
 export default Stat;

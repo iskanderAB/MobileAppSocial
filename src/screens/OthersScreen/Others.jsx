@@ -10,11 +10,11 @@ const Others = ({navigation}) => {
             <View style={styles.header}>
                 <Text style={{fontWeight:'bold',fontSize:30,marginBottom :10}}> Others </Text>
             </View>
-            <Text style={styles.text}>Evènements</Text>
+            {/* <Text style={styles.text}>Evènements</Text> */}
             <Text style={styles.text} onPress={()=>navigation.navigate('Parametres')}>Paramétres</Text>
             <Text style={styles.text} onPress={()=>navigation.navigate('Stat')}>Stat</Text>
             <Text style={styles.text} onPress={()=>navigation.navigate('Offre') }>Ajouter offre de stage  </Text>
-            <Text style={styles.text} onPress={() => signOut()} >Se deconnecter </Text>
+            <Text style={styles.text} onPress={() => signOut()}> Se deconnecter </Text>
         </View>
     );
 }
