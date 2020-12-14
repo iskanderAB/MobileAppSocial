@@ -21,11 +21,9 @@ const Home = ({ navigation ,route}) => {
         getData();
     }, []);
     const getData = async () => {
-        if(token === null ){
-            await AsyncStorage.getItem('token').then(res => {
+        await AsyncStorage.getItem('token').then(res => {
                 setToken(res);
             });
-        }
         setRefreshing(true)
         console.log('tooooken => ', token);
         setPosts([]);
@@ -39,7 +37,7 @@ const Home = ({ navigation ,route}) => {
             console.log('postes => ' , response.data)
             setRefreshing(false)
         }).catch(error => {
-            //setRefreshing(false);
+            setRefreshing(false);
             //alert("erreur de connexion ! ");
             //console.log("\n", error.response)
         });
@@ -47,7 +45,7 @@ const Home = ({ navigation ,route}) => {
 
     useEffect(() => {
         getData();        
-    }, [token]);
+    }, []);
 
     const loveRequest = async (id) => {
         //console.log("Request !! ")
@@ -112,7 +110,7 @@ const Home = ({ navigation ,route}) => {
             
             {posts !== [] ?
                     posts.map((post, index) => {
-                        return <Post key={index} createdAt={post.createdAt} title={post.title} email={post.createdBy.email} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />
+                        return <Post key={index} attachment={post.attachment} createdAt={post.createdAt} title={post.title} email={post.createdBy.email} date={post.date} navigation={navigation} avatar={`http://${ip}:8001/upload/user/${post.createdBy.image}`} id={post.id} content={post.content} postImage={`http://${ip}:8001/upload/user/posts/${post.image}`} userFullName={post.createdBy.nom + ' ' + post.createdBy.prenom} type={post.type} participateRequest={participateRequest} interested={post.interested.map(v => v.email)}  allInterested={post.interested}  loveRequest={loveRequest} loved={post.Lovers.map(v => v.email)} token={token}  />
                     })
                     :
                     <Text style={{...styles.text,alignSelf : 'center',justifyContent :'center',color:'gray',marginTop:150}}> Aucune donnée ... </Text>

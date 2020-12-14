@@ -1,17 +1,17 @@
 import React, {useState,useEffect} from 'react';
 import {Avatar, Card, Title, Paragraph} from 'react-native-paper';
-import {StyleSheet , Text,TouchableOpacity ,ActivityIndicator} from "react-native";
+import {StyleSheet , Text,TouchableOpacity ,ActivityIndicator , View,Linking} from "react-native";
+import * as WebBrowser from 'expo-web-browser';
 import { IconButton, Colors } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons'; 
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 
-const Post = ({navigation,avatar,allInterested, email,userFullName , content ,postImage , createdAt ,type ,title,id,loveRequest,loved,token , participateRequest ,interested,date}) => {
+const Post = ({navigation,avatar,allInterested , attachment, email,userFullName , content ,postImage , createdAt ,type ,title,id,loveRequest,loved,token , participateRequest ,interested,date}) => {
     const [love , setLove] = useState(loved.includes(jwt_decode(token).username));
     const [participate , setParticipate] = useState(interested.includes(jwt_decode(token).username));
     const [lovers , setLovers]= useState(loved.length); 
     const LeftContent = () => <Avatar.Image  size={50} source={{uri:avatar}}/>
-     
     useEffect(()=> {
       console.log('loveeeee' , loved.includes(jwt_decode(token).username))
     },[love])
@@ -26,14 +26,26 @@ const Post = ({navigation,avatar,allInterested, email,userFullName , content ,po
         loveRequest(id);
     }
 
+    useEffect(()=>{
+        console.log('posteImage', typeof postImage.replace('http://192.168.43.207:8001/upload/user/posts/',''))
+        console.log('attachment', attachment);
+        console.log('contents => ' , content.split('--').length);
+
+    });
     const isParticipate = () => {
         participateRequest(id);
         setParticipate(!participate);
     }
+    const  _handleOpenWithLinking = (url) => {
+        Linking.openURL(url);
+      };
     
+    const   _handleOpenWithWebBrowser = () => {
+        WebBrowser.openBrowserAsync('https://expo.io');
+      };
     return (
         <Card style={styles.post} onPress={type === 'event' ? ()=> navigation.navigate('Event', {
-            image: postImage,
+            image: postImage.replace('http://192.168.43.207:8001/upload/user/posts/','') === 'null' ? 'http://192.168.43.207:8001/upload/user/posts/stagee.jpg': postImage ,
             title: title,
             content : content,
             date : date,
@@ -56,9 +68,23 @@ const Post = ({navigation,avatar,allInterested, email,userFullName , content ,po
             size={24} color="black" /> : null}/>
             <Card.Content style={{paddingHorizontal :5}}>
                 { type === 'event' ?  <Text style={styles.text}> {title} </Text> : null }
-                <Paragraph>{content}</Paragraph>
+                {content.split('--').length ===3 ? 
+                <>
+                <Text style={{color :'gray'}}>Offres d'emploi Stage</Text> 
+                <Text>Email :  {content.split('--')[0]} </Text>
+                <Text>Sujet :  {content.split('--')[1]} </Text>
+                <Text>Discreption :  {content.split('--')[2]} </Text>
+                </>
+                :
+                <Paragraph>{content}</Paragraph> }
+            {attachment !== null ?  <TouchableOpacity 
+             onPress={()=> { 
+                _handleOpenWithLinking('http://192.168.43.207:8001/upload/user/posts/'+attachment);
+                // await WebBrowser.openBrowserAsync('http://192.168.43.207:8001/upload/user/posts/'+attachment)
+             }}
+             style={{backgroundColor : '#F9F9F9',height :80,flexDirection:'row' ,alignItems :'center'}}><AntDesign name="filetext1"  size={40} color="#636363" /><Text>{attachment}</Text></TouchableOpacity> : null}
             </Card.Content>
-            <Card.Cover  source={{uri:postImage}}  />
+            {postImage.replace('http://192.168.43.207:8001/upload/user/posts/','') !== 'null' ? <Card.Cover  source={{uri:postImage}} /> : null } 
             <Card.Actions style={{padding:0,flexDirection:'row'}}>
                 <IconButton
                     icon={love ? 'heart' : 'heart-outline'}
@@ -69,7 +95,7 @@ const Post = ({navigation,avatar,allInterested, email,userFullName , content ,po
                     style={{marginLeft : 0}}
                 />
                 <Text style={{paddingLeft:0,color: 'gray'}}> {lovers} </Text>
-                {type === 'event' ? 
+                {type === 'event' && content.split('--').length ===1 ? 
                     <TouchableOpacity
                         style={{...styles.button,backgroundColor: participate ? '#50aeff' : "white",}}
                         onPress={isParticipate}

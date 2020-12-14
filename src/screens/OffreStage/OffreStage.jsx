@@ -19,20 +19,19 @@ import * as FileSystem from 'expo-file-system';
 import ImageUpload from "../../components/ImagePicker/ImageUpload";
 import { Fontisto } from '@expo/vector-icons';
 import { IconButton, Colors } from 'react-native-paper';
+import { set } from "react-native-reanimated";
 let ip ='192.168.43.207' ;
 
 const offreStage = ({navigation}) => {
-    const [isSelected,setSelection] = useState(false);
     const [loading , setLoading] = useState(false);
-    const [token ,setToken] = useState(null) ;
-    const [status, setStatus] = useState();
-    const [nomEven, setNomEven] = useState();
-    const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const [image , setImage] = useState(null);
-    const [document ,setDocument] = useState(null);
-    const [nameOfFile , setNameOfFile] = useState(null);
+    const [date, setDate] = useState(new Date());
+    const [token ,setToken] = useState(null) ;
+    const [sujet ,setSujet] = useState(null) ;
+    const [discreption , setDiscreption] = useState(null);
+    const [company , setCompany] = useState(null);
+    const [email , setEmail] = useState(null);
+    const [mode, setMode] = useState('date');
 
     const getData = async ()=> {
         await AsyncStorage.getItem('token').then(res => {
@@ -43,12 +42,46 @@ const offreStage = ({navigation}) => {
         getData();
     },[])
 
-    useEffect(()=>{
-        console.log(isSelected)
-    },[isSelected]);
+    function requestPost() {
+        // // alert(`Donayla test  ${email}`);
+        // let docToUpload = new FormData();
+        // docToUpload.append('iskander_file',document);
+        // console.log(docToUpload);
+        let data = {
+            content : email  + '--' + sujet + '--' + discreption ,
+            type : 'event',
+            date : date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear(),
+            title : company,
+        };
+        //console.log('[data]', data.type);
+        setLoading(true);
+        //console.log(data);
+        axios.post(`http://${ip}:8001/api/addPost`,data,{
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(function (response) {
+            // handle success
+            //console.log("Response =====> " , response.data);
+            setTimeout(()=> navigation.navigate("Home"),500)
+            setTimeout(()=>{
+                Alert.alert(`Ajouter avec succée `);
+                setCompany('');
+                setSujet('');
+                setDate(new Date());
+                setEmail('');
+                setDiscreption('');
 
-
-
+                setLoading(false)},200);
+        }).catch(error => {
+            setLoading(false);
+            // console.log('====================================');
+            // console.log(error.response);
+            // console.log('====================================');
+            alert(`${error}`);
+        })
+    }
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'Android');
@@ -61,56 +94,6 @@ const offreStage = ({navigation}) => {
     const showDatepicker = () => {
         showMode('date');
     };
-    const documentPicker = async () =>  {
-            let doc = await DocumentPicker.getDocumentAsync({
-                type: "/"
-            });
-            alert(doc);
-            console.log("docccccc",doc.uri);
-            const  fileString = await FileSystem.readAsStringAsync(doc.uri,{encoding: FileSystem.EncodingType.base64});
-            //console.log('file =>' ,fileString)
-            let info = await FileSystem.getInfoAsync(doc.uri, {size : true})
-
-            console.log( 'info ==> ' ,  info)
-            setDocument("data:application/pdf;base64,"+fileString);
-            setNameOfFile(doc.name);
-    }
-
-    const ifEvent = () => {
-        return (
-            <View style={{flex:1 }}>
-            <Text style={styles.text}> Nom de l'Evènement </Text>
-            <TextInput placeholder={'Nom de l\'Evènement'} style={{height: 50,
-                width: '100%',
-                borderWidth: 1,
-                padding: 15,
-                borderColor: '#bebcbc',
-                marginBottom: 5,
-                borderRadius: 50,}} selectionColor={'red'}
-                       onChangeText={(text)=> setNomEven(text)}
-            />
-             <Text style={styles.text}> Date de l'Evènement </Text>
-
-                    <View>
-                        <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
-                            <Text style={{fontWeight:"700",color: '#606060'}}>{date.getMonth()}/{date.getDate()}/{date.getFullYear()}</Text>
-                            <Fontisto name="date" size={24} color="black" />
-                        </TouchableOpacity>
-                        <Text style={styles.text}> </Text>
-                    </View>
-                    {show && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={date}
-                            mode={mode}
-                            is24Hour={true}
-                            display="default"
-                            onChange={onChange}
-                        />
-                    )}
-            </View>
-        )
-    }
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -122,7 +105,7 @@ const offreStage = ({navigation}) => {
                        placeholderTextColor="grey"
                        numberOfLines={10}
                        multiline={true}
-                       onChangeText={(text)=> setStatus(text)}
+                       onChangeText={(text)=> setSujet(text)}
                 />
         </View>
 
@@ -133,7 +116,8 @@ const offreStage = ({navigation}) => {
                     placeholderTextColor="grey"
                     numberOfLines={10}
                     multiline={true}
-                    onChangeText={(text)=> setStatus(text)}
+                    value={discreption}
+                    onChangeText={(text)=> setDiscreption(text)}
                 />
             </View>
         <View style={styles.file}>
@@ -146,8 +130,10 @@ const offreStage = ({navigation}) => {
                 padding: 15,
                 borderColor: '#bebcbc',
                 marginBottom: 5,
-                borderRadius: 50,}} selectionColor={'red'}
-                       onChangeText={(text)=> setNomEven(text)}
+                borderRadius: 50,}} 
+                selectionColor={'red'}
+                value={company}
+                onChangeText={(text)=> setCompany(text)}
             />
             <Text style={styles.text}> Email de sociéte </Text>
             <TextInput placeholder={'Email de sociéte'} style={{height: 50,
@@ -156,8 +142,10 @@ const offreStage = ({navigation}) => {
                 padding: 15,
                 borderColor: '#bebcbc',
                 marginBottom: 5,
-                borderRadius: 50,}} selectionColor={'red'}
-                       onChangeText={(text)=> setNomEven(text)}
+                borderRadius: 50,}} 
+                selectionColor={'red'}
+                value={email}
+                onChangeText={(text)=> setEmail(text)}
             />
 
             <Text style={styles.text}> Date de debut </Text>
@@ -180,7 +168,7 @@ const offreStage = ({navigation}) => {
                 />
             )}
 
-            <View style={{top:-25}}>
+            {/* <View style={{top:-25}}>
             <Text style={styles.text}> Date de fin </Text>
 
                 <TouchableOpacity style={styles.dateBut} onPress={showDatepicker}>
@@ -196,10 +184,10 @@ const offreStage = ({navigation}) => {
                     mode={mode}
                     is24Hour={true}
                     display="default"
-                    onChange={onChange}
+                    onChange={onChange1}
                 />
             )}
-            </View>
+            </View> */}
         <Button
             title="Left button"
             onPress={() => 0}

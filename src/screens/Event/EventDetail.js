@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -10,28 +10,28 @@ import {
     Image,
     Alert
 } from "react-native";
-import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
 import moment from 'moment';
 
 let ip = '192.168.43.207';
 
-const EventDetail = ({route ,navigation}) => {
-    const [isSelected,setSelection] = useState(false);
-    const [loading , setLoading] = useState(false);
-    const [token ,setToken] = useState(null) ;
+const EventDetail = ({ route, navigation }) => {
+    const [isSelected, setSelection] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [token, setToken] = useState(null);
     const [status, setStatus] = useState();
     const [nomEven, setNomEven] = useState();
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-    const [document ,setDocument] = useState(null);
-    const [nameOfFile , setNameOfFile] = useState(null);
+    const [document, setDocument] = useState(null);
+    const [nameOfFile, setNameOfFile] = useState(null);
     let dt = new Date(date);
 
-    const { image, title, content , date ,allInterested,thisUser } = route.params;
+    const { image, title, content, date, allInterested, thisUser } = route.params;
 
-    useEffect(()=> {
-        console.log('intersteeeeed => ' , allInterested)
+    useEffect(() => {
+        console.log('intersteeeeed => ', allInterested)
     });
 
     return (
@@ -45,22 +45,29 @@ const EventDetail = ({route ,navigation}) => {
 
             <View style={styles.container1}>
                 <View >
-                    <Text style={{marginVertical: 10,
+                    <Text style={{
+                        marginVertical: 10,
                         color: '#606060',
-                        fontWeight:'700',
-                        fontSize:23}}> {title} </Text>
+                        fontWeight: '700',
+                        fontSize: 23
+                    }}> {title} </Text>
 
                     <Text style={styles.text}> {moment(date).format('ll')} </Text>
-                    <Text style={styles.text}> {content} </Text>
-                    {allInterested.length > 0 ?  allInterested.map((user,index) => {
-                        if(thisUser !== user.email)
-                            return(<Card style={{ marginTop : 10}}>
-                                        <Card.Title title={user.nom+' '+user.prenom} style={{paddingLeft :3}} key={index} left={()=><Avatar.Image  size={50} source={{uri:`http://${ip}:8001/upload/user/${user.image}`}}/>}/>
-                                    </Card>)
+                    {content.split('--').length === 3 ?
+                        <>
+                            <Text style={{ color: 'gray' }}>Offres d'emploi Stage</Text>
+                            <Text>Email :  {content.split('--')[0]} </Text>
+                            <Text>Sujet :  {content.split('--')[1]} </Text>
+                            <Text>Discreption :  {content.split('--')[2]} </Text>
+                        </> : <Text style={styles.text}> {content} </Text>}
+
+                    {allInterested.length > 0 ? allInterested.map((user, index) => {
+                        if (thisUser !== user.email)
+                            return (<Card style={{ marginTop: 10 }}>
+                                <Card.Title title={user.nom + ' ' + user.prenom} style={{ paddingLeft: 3 }} key={index} left={() => <Avatar.Image size={50} source={{ uri: `http://${ip}:8001/upload/user/${user.image}` }} />} />
+                            </Card>)
                     }) :
-                    null}
-
-
+                        null}
                 </View>
             </View>
         </ScrollView>);
@@ -76,9 +83,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 20
     },
-    image : {
-      height : 300,
-      width : "100%"
+    image: {
+        height: 300,
+        width: "100%"
     },
     header: {
         //backgroundColor : 'red',
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    inputContainer  : {
+    inputContainer: {
         height: 100,
         width: '100%',
         borderWidth: 1,
@@ -101,8 +108,8 @@ const styles = StyleSheet.create({
         marginVertical: 10,
 
     },
-    dateBut : {
-        flexDirection:'row',
+    dateBut: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: "center",
         padding: 15,
@@ -111,8 +118,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
 
     },
-    datefin : {
-        flexDirection:'row',
+    datefin: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: "center",
         padding: 15,
@@ -122,7 +129,7 @@ const styles = StyleSheet.create({
 
     },
     input: {
-        height:400,
+        height: 400,
         width: '100%',
         borderWidth: 1,
         padding: 15,
@@ -139,16 +146,16 @@ const styles = StyleSheet.create({
         height: 60,
         marginBottom: 20
     },
-    label : {
+    label: {
         color: 'white'
     },
-    textBottom : {
+    textBottom: {
         flex: 1,
         justifyContent: 'center'
     },
-    file :{
-        flexDirection : 'row',
-        alignItems : 'center'
+    file: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 });
 export default EventDetail;

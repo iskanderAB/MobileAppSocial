@@ -74,7 +74,6 @@ const Stat = ({navigation}) => {
 
             </Picker>
         </View>
-
         <Text style={styles.text}> Durée par mois </Text>
         <TextInput placeholder={'Nombre de mois'} style={styles.input} keyboardType={'numeric'} selectionColor={'red'}
                    onChangeText={(nbr)=> setDuree(nbr)}
